@@ -52,6 +52,93 @@ html[data-theme="dark"] {
   --shadow-float: 0 6px 28px rgba(0, 0, 0, 0.6);
 }
 
+/* ── Theme picker ── */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.theme-dot {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.theme-dot:hover { transform: scale(1.12); }
+.theme-dot.active {
+  border-color: var(--label);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Dark mode override ── */
+html[data-theme="dark"] .theme-dot.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+html[data-accent="blue"] {
+  --accent: #0a84ff;
+  --accent-soft: rgba(10, 132, 255, 0.14);
+  --accent-grad-start: #0a84ff;
+  --accent-grad-end: #5e5ce6;
+}
+html[data-accent="indigo"] {
+  --accent: #5e5ce6;
+  --accent-soft: rgba(94, 92, 230, 0.14);
+  --accent-grad-start: #5e5ce6;
+  --accent-grad-end: #bd5ce6;
+}
+html[data-accent="purple"] {
+  --accent: #af52de;
+  --accent-soft: rgba(175, 82, 222, 0.14);
+  --accent-grad-start: #af52de;
+  --accent-grad-end: #e652b0;
+}
+html[data-accent="rose"] {
+  --accent: #ff375f;
+  --accent-soft: rgba(255, 55, 95, 0.14);
+  --accent-grad-start: #ff375f;
+  --accent-grad-end: #ff6b35;
+}
+html[data-accent="orange"] {
+  --accent: #ff9500;
+  --accent-soft: rgba(255, 149, 0, 0.14);
+  --accent-grad-start: #ff9500;
+  --accent-grad-end: #ff375f;
+}
+html[data-accent="green"] {
+  --accent: #34c759;
+  --accent-soft: rgba(52, 199, 89, 0.14);
+  --accent-grad-start: #30b566;
+  --accent-grad-end: #34c759;
+}
+html[data-accent="teal"] {
+  --accent: #30b0c7;
+  --accent-soft: rgba(48, 176, 199, 0.14);
+  --accent-grad-start: #30b0c7;
+  --accent-grad-end: #34c759;
+}
+html[data-accent="gold"] {
+  --accent: #d4a017;
+  --accent-soft: rgba(212, 160, 23, 0.14);
+  --accent-grad-start: #d4a017;
+  --accent-grad-end: #e8b830;
+}
+html[data-accent="sky"] {
+  --accent: #40c8e0;
+  --accent-soft: rgba(64, 200, 224, 0.14);
+  --accent-grad-start: #40c8e0;
+  --accent-grad-end: #0a84ff;
+}
+html[data-accent="mint"] {
+  --accent: #66d4cf;
+  --accent-soft: rgba(102, 212, 207, 0.14);
+  --accent-grad-start: #66d4cf;
+  --accent-grad-end: #34c759;
+}
+
 html[data-theme="light"] {
   --bg: #f2f2f7;
   --bg-elevated: #ffffff;

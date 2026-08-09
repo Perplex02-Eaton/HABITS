@@ -215,6 +215,35 @@ export default function Settings() {
               </button>
             </div>
           </div>
+          <div className="field-group mt-20">
+            <label className="field-label">Color de acento</label>
+            <div className="theme-grid">
+              {[
+                { id: "blue", color: "#0a84ff", label: "Azul" },
+                { id: "indigo", color: "#5e5ce6", label: "Índigo" },
+                { id: "purple", color: "#af52de", label: "Púrpura" },
+                { id: "rose", color: "#ff375f", label: "Rosa" },
+                { id: "orange", color: "#ff9500", label: "Naranja" },
+                { id: "green", color: "#34c759", label: "Verde" },
+                { id: "teal", color: "#30b0c7", label: "Turquesa" },
+                { id: "gold", color: "#d4a017", label: "Dorado" },
+                { id: "sky", color: "#40c8e0", label: "Cielo" },
+                { id: "mint", color: "#66d4cf", label: "Menta" }
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  className={`theme-dot ${(settings.accentColor ?? "blue") === t.id ? "active" : ""}`}
+                  style={{ background: t.color }}
+                  title={t.label}
+                  onClick={() => {
+                    setSettings({ accentColor: t.id });
+                    document.documentElement.setAttribute("data-accent", t.id);
+                  }}
+                  aria-label={`Tema ${t.label}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="card card-section">

@@ -21,6 +21,7 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 export default function App() {
   const location = useLocation();
   const darkMode = useStore((s) => s.data.settings.darkMode);
+  const accentColor = useStore((s) => s.data.settings.accentColor);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -39,6 +40,12 @@ export default function App() {
     media.addEventListener("change", applyTheme);
     return () => media.removeEventListener("change", applyTheme);
   }, [darkMode]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (accentColor) root.setAttribute("data-accent", accentColor);
+    else root.removeAttribute("data-accent");
+  }, [accentColor]);
 
   return (
     <>

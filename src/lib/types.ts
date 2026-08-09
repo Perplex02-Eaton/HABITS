@@ -106,6 +106,7 @@ export interface Settings {
   notifyTasks: boolean;
   reminderLead: number;
   darkMode: "auto" | "light" | "dark";
+  accentColor?: string;
   ai: AiConfig;
   newsApiKey: string;
   spotifyClientId: string;
