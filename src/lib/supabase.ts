@@ -1,7 +1,17 @@
 import { createClient, type SupabaseClient, type Session } from "@supabase/supabase-js";
 
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+// La URL y la clave anónima son identificadores públicos del cliente. El
+// respaldo permite que instalaciones publicadas funcionen aunque el proveedor
+// de hosting no copie el archivo .env local durante la compilación.
+const PUBLIC_SUPABASE_URL = "https://rwyqefehgelmcrrbvbmu.supabase.co";
+const PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3eXFlZmVoZ2VsbWNycmJ2Ym11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDQ0NTAsImV4cCI6MjEwMTY4MDQ1MH0.WTPrkC9oMveMLxCCi2RvGFNRM8T7H4wi6Y3O5xMxSRY";
+
+const url =
+  (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() ||
+  PUBLIC_SUPABASE_URL;
+const key =
+  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() ||
+  PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabase: SupabaseClient | null =
   url && key ? createClient(url, key) : null;
