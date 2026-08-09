@@ -76,6 +76,15 @@ export async function signIn(email: string, password: string): Promise<{ ok: boo
   return { ok: true };
 }
 
+export async function signInWithGoogle(): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase) return { ok: false, error: "Supabase no configurado" };
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${window.location.origin}${window.location.pathname}` }
+  });
+  return error ? { ok: false, error: error.message } : { ok: true };
+}
+
 export async function signOut(): Promise<void> {
   if (!supabase) return;
   await supabase.auth.signOut();

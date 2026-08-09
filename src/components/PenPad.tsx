@@ -204,7 +204,7 @@ export default function PenPad({ initial, onChange }: PenPadProps) {
         </button>
       </div>
       <p className="muted small mt-8" style={{ fontSize: 12 }}>
-        Escribe con el lápiz de tu tablet (SPen) o con el dedo. La presión se tiene en cuenta.
+        Compatible con S Pen, Apple Pencil, otros lápices activos y el dedo. La presión modifica el grosor del trazo.
       </p>
     </div>
   );

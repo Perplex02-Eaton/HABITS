@@ -8,10 +8,11 @@ import Empty from "../components/ui/Empty";
 import ConfirmSheet from "../components/ui/ConfirmSheet";
 import { IconPlus, IconTrash, IconTrendingUp } from "../components/ui/Icons";
 
-const CATEGORIES = ["Académico", "Salud", "Disciplina", "Energía", "Foco"];
+const CATEGORIES = ["Académico", "Salud", "Disciplina", "Energía", "Foco", "Metas diarias"];
 
 export default function Performance() {
   const metrics = useStore((s) => s.data.metrics);
+  const fixedGoals = useStore((s) => s.data.fixedGoals ?? []);
   const addMetric = useStore((s) => s.addMetric);
   const deleteMetric = useStore((s) => s.deleteMetric);
 
@@ -23,9 +24,31 @@ export default function Performance() {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartApi = useRef<IChartApi | null>(null);
 
+  const goalMetrics = useMemo(() => {
+    if (fixedGoals.length === 0) return [];
+    const dates = new Set<string>([todayKey()]);
+    fixedGoals.forEach((goal) => Object.keys(goal.completions ?? {}).forEach((date) => dates.add(date)));
+    return Array.from(dates).sort().map((date) => {
+      const availableGoals = fixedGoals.filter((goal) => {
+        const created = new Date(goal.createdAt);
+        const createdKey = `${created.getFullYear()}-${String(created.getMonth() + 1).padStart(2, "0")}-${String(created.getDate()).padStart(2, "0")}`;
+        return createdKey <= date;
+      });
+      const target = availableGoals.reduce((sum, goal) => sum + goal.targetPerDay, 0);
+      const completed = availableGoals.reduce((sum, goal) => sum + Math.min(goal.completions?.[date] ?? 0, goal.targetPerDay), 0);
+      return {
+        id: `goals-${date}`,
+        date,
+        category: "Metas diarias",
+        value: target > 0 ? Math.round((completed / target) * 100) : 0
+      };
+    });
+  }, [fixedGoals]);
+
   const catMetrics = useMemo(
-    () => metrics.filter((m) => m.category === category).sort((a, b) => a.date.localeCompare(b.date)),
-    [metrics, category]
+    () => (category === "Metas diarias" ? goalMetrics : metrics.filter((metric) => metric.category === category))
+      .sort((a, b) => a.date.localeCompare(b.date)),
+    [metrics, goalMetrics, category]
   );
 
   useEffect(() => {
@@ -108,6 +131,11 @@ export default function Performance() {
   }, [catMetrics]);
 
   const save = () => {
+    if (category === "Metas diarias") {
+      toast("Esta categoría se calcula desde tus metas diarias", "🎯");
+      setSheetOpen(false);
+      return;
+    }
     addMetric({ date: todayKey(), category, value });
     toast(`${category} registrado: ${value}%`, "📈");
     setSheetOpen(false);
@@ -122,9 +150,11 @@ export default function Performance() {
             <h1 className="page-title">Rendimiento</h1>
             <p className="page-subtitle">Tu avance, en gráfica de trading</p>
           </div>
-          <button className="btn btn-primary btn-icon" onClick={() => setSheetOpen(true)} aria-label="Registrar métrica">
-            <IconPlus size={22} />
-          </button>
+          {category !== "Metas diarias" && (
+            <button className="btn btn-primary btn-icon" onClick={() => setSheetOpen(true)} aria-label="Registrar métrica">
+              <IconPlus size={22} />
+            </button>
+          )}
         </div>
       </header>
 
@@ -183,7 +213,7 @@ export default function Performance() {
       )}
 
       <div className="stack mt-24">
-        {metrics.filter((m) => m.category === category).length > 0 && (
+        {catMetrics.length > 0 && (
           <h2 className="muted" style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase", padding: "0 4px" }}>
             Historial de {category}
           </h2>
@@ -199,9 +229,11 @@ export default function Performance() {
                   <div className="list-sub">{formatShort(m.date)}</div>
                 </div>
                 <span className="badge badge-blue">{m.category}</span>
-                <button className="btn-icon" style={{ color: "var(--red)" }} onClick={() => setConfirmDelete(m.id)}>
-                  <IconTrash size={16} />
-                </button>
+                {category !== "Metas diarias" && (
+                  <button className="btn-icon" style={{ color: "var(--red)" }} onClick={() => setConfirmDelete(m.id)}>
+                    <IconTrash size={16} />
+                  </button>
+                )}
               </div>
             </div>
           ))}

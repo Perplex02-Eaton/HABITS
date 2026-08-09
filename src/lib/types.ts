@@ -120,8 +120,14 @@ export interface AiConfig {
 export interface NoteImage {
   id: string;
   name: string;
-  kind: "upload" | "drawing";
+  kind: "upload" | "drawing" | "pdf";
   createdAt: number;
+}
+
+export interface NoteChecklistItem {
+  id: string;
+  text: string;
+  done: boolean;
 }
 
 export interface Note {
@@ -130,9 +136,19 @@ export interface Note {
   content: string;
   images: string[];
   drawingId: string | null;
+  checklist: NoteChecklistItem[];
   pinned: boolean;
   createdAt: number;
   updatedAt: number;
+}
+
+export interface FixedGoal {
+  id: string;
+  title: string;
+  targetPerDay: number;
+  active: boolean;
+  completions: Record<string, number>;
+  createdAt: number;
 }
 
 export interface AppData {
@@ -143,5 +159,6 @@ export interface AppData {
   calendarEvents: CalendarEvent[];
   metrics: Metric[];
   notes: Note[];
+  fixedGoals: FixedGoal[];
   settings: Settings;
 }

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../stores/useStore";
-import { isCloudEnabled, signIn, signUp } from "../lib/supabase";
+import { isCloudEnabled, signIn, signInWithGoogle, signUp } from "../lib/supabase";
 import { requestPermission } from "../lib/notify";
 import { aiConfigured, aiImprove } from "../lib/ai";
+import { ASSISTANT_VOICE_KEY, cinematicSpanish, preferredSpanishVoice, spanishVoices } from "../lib/voice";
+import { useAccess } from "../stores/useAccess";
+import { Link } from "react-router-dom";
 import { toast } from "../stores/useToasts";
 import Switch from "../components/ui/Switch";
 import Sheet from "../components/ui/Sheet";
@@ -20,6 +23,7 @@ export default function Settings() {
   const cloudUser = useStore((s) => s.cloudUser);
   const enableCloud = useStore((s) => s.enableCloud);
   const disableCloud = useStore((s) => s.disableCloud);
+  const { access, refresh: refreshAccess } = useAccess();
 
   const [authOpen, setAuthOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -27,11 +31,25 @@ export default function Settings() {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [installEvt, setInstallEvt] = useState<BeforeInstallPromptEvent | null>(null);
   const [testing, setTesting] = useState(false);
+  const [assistantVoices, setAssistantVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [assistantVoice, setAssistantVoice] = useState("");
 
   useEffect(() => {
     const onPrompt = (e: Event) => setInstallEvt(e as BeforeInstallPromptEvent);
     window.addEventListener("beforeinstallprompt", onPrompt);
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
+  }, []);
+
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+    const load = () => {
+      const available = spanishVoices();
+      setAssistantVoices(available);
+      setAssistantVoice(localStorage.getItem(ASSISTANT_VOICE_KEY) || preferredSpanishVoice()?.name || "");
+    };
+    load();
+    window.speechSynthesis.addEventListener("voiceschanged", load);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", load);
   }, []);
 
   const install = async () => {
@@ -57,6 +75,7 @@ export default function Settings() {
     setEmail("");
     setPassword("");
     await useStore.getState().enableCloud();
+    await refreshAccess();
   };
 
   return (
@@ -122,6 +141,47 @@ export default function Settings() {
         </div>
 
         <div className="card card-section">
+          <div className="row-between">
+            <div>
+              <div className="list-title">Voz de JARVIS</div>
+              <div className="list-sub">Voz española gratuita instalada en este dispositivo</div>
+            </div>
+          </div>
+          <div className="field-group mt-16">
+            <label className="field-label">Voz en español</label>
+            <select
+              className="field"
+              value={assistantVoice}
+              onChange={(event) => {
+                const name = event.target.value;
+                setAssistantVoice(name);
+                localStorage.setItem(ASSISTANT_VOICE_KEY, name);
+              }}
+            >
+              {assistantVoices.length === 0 && <option value="">Voz predeterminada en español</option>}
+              {assistantVoices.map((voice) => (
+                <option key={`${voice.name}-${voice.lang}`} value={voice.name}>
+                  {voice.name} · {voice.lang}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            className="btn btn-secondary btn-block mt-16"
+            onClick={() => {
+              window.speechSynthesis.cancel();
+              window.speechSynthesis.speak(cinematicSpanish("Buenas tardes, jefe. Sistemas en línea. Estoy listo para ayudarle."));
+            }}
+            disabled={!("speechSynthesis" in window)}
+          >
+            Probar voz
+          </button>
+          {assistantVoices.length === 0 && (
+            <p className="muted small mt-8">Este dispositivo no reporta voces españolas instaladas. Agrega una voz de Español en los ajustes de idioma del sistema.</p>
+          )}
+        </div>
+
+        <div className="card card-section">
           <div className="field-group">
             <label className="field-label">Avisar con anticipación</label>
             <div className="chips">
@@ -181,9 +241,9 @@ export default function Settings() {
             />
           </div>
           <p className="muted small mt-8" style={{ lineHeight: 1.5 }}>
-            Gratis en <b>developer.spotify.com</b> → «Create app». Registra como Redirect URI la
-            dirección de tu app (ej. <b>http://localhost:5173/</b>). Así podrás iniciar sesión y buscar
-            música dentro de Habits.
+            Crea una app gratis en <b>developer.spotify.com</b> y registra exactamente esta Redirect URI:
+            {" "}<b>{window.location.origin + "/"}</b>. Solo necesitas el Client ID; no coloques ningún
+            Client Secret en Habits. La conexión usa autorización segura PKCE.
           </p>
         </div>
 
@@ -280,7 +340,7 @@ export default function Settings() {
             <div className="row">
               <span style={{ fontSize: 24 }}>☁️</span>
               <div>
-                <div className="list-title">Sincronización en la nube</div>
+                <div className="list-title">Cuenta y sincronización</div>
                 <div className="list-sub">
                   {!isCloudEnabled()
                     ? "Configura Supabase (ver .env)"
@@ -304,10 +364,17 @@ export default function Settings() {
             )}
           </div>
           {cloudEnabled && cloudUser?.email && (
-            <p className="muted small mt-16" style={{ lineHeight: 1.5 }}>
-              <IconCloud size={13} /> Tus datos se sincronizan automáticamente entre tu celular, tablet y laptop al iniciar sesión con la misma cuenta.
-            </p>
+            <>
+              <div className="account-plan-row mt-16">
+                <span>{access.isOwner ? "Propietario" : access.plan === "student" ? "Estudiante" : "Gratis"}</span>
+                {access.isOwner && <b>Acceso total</b>}
+              </div>
+              <p className="muted small mt-8" style={{ lineHeight: 1.5 }}>
+                <IconCloud size={13} /> Tus datos se sincronizan automáticamente entre tu celular, tablet y laptop.
+              </p>
+            </>
           )}
+          {!access.isOwner && <Link className="btn btn-primary btn-block mt-16" to="/planes">Ver planes</Link>}
         </div>
 
         {installEvt && (
@@ -322,6 +389,16 @@ export default function Settings() {
       </div>
 
       <Sheet open={authOpen} title={mode === "login" ? "Iniciar sesión" : "Crear cuenta"} onClose={() => setAuthOpen(false)}>
+        <button
+          className="btn btn-secondary btn-block"
+          onClick={async () => {
+            const result = await signInWithGoogle();
+            if (!result.ok) toast(result.error || "No se pudo abrir Google", "⚠️");
+          }}
+        >
+          Continuar con Google
+        </button>
+        <div className="auth-divider"><span>o con correo</span></div>
         <div className="field-group">
           <label className="field-label">Correo</label>
           <input

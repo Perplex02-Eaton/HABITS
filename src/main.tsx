@@ -4,8 +4,10 @@ import { HashRouter } from "react-router-dom";
 import App from "./App";
 import "./styles/global.css";
 import { initStore } from "./stores/useStore";
+import { initAccess } from "./stores/useAccess";
 
 initStore();
+initAccess();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

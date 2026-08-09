@@ -146,6 +146,7 @@ export default function Dashboard() {
       </header>
 
       <div className="stack">
+        <MusicPanel compact />
         <Jarvis />
 
         {nextPersonalEvent && (
@@ -284,8 +285,6 @@ export default function Dashboard() {
             </div>
           )}
         </div>
-
-        <MusicPanel />
 
         <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <Link to="/ideas" className="card reveal" style={{ textDecoration: "none", transitionDelay: "120ms" }}>

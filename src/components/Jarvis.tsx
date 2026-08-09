@@ -5,6 +5,8 @@ import { toast } from "../stores/useToasts";
 import { uid } from "../lib/uid";
 import type { MealType, Priority } from "../lib/types";
 import { aiAssistant, aiConfigured } from "../lib/ai";
+import { cinematicSpanish } from "../lib/voice";
+import JarvisSphere3D from "./JarvisSphere3D";
 
 const WEEKDAYS: Record<string, number> = {
   domingo: 0,
@@ -57,12 +59,18 @@ function findWeekday(text: string): number | null {
 }
 
 function stripTime(text: string): { text: string; time?: string } {
-  const m = text.match(/(?:a las|a la|las|a)\s+(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?/i);
+  const numberWords: Record<string, number> = {
+    una: 1, uno: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6,
+    siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12
+  };
+  // Exige "a la/a las" para no confundir "agrega una alarma" con la 1:00.
+  const m = text.match(/\b(?:a\s+las?|las)\s+(\d{1,2}|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce)(?::(\d{2}))?\s*(a\.?\s*m\.?|p\.?\s*m\.?)?/i);
   if (!m) return { text };
-  let h = parseInt(m[1], 10);
+  let h = numberWords[m[1].toLowerCase()] ?? parseInt(m[1], 10);
   const min = m[2] ? parseInt(m[2], 10) : 0;
   const ap = (m[3] || "").toLowerCase();
-  if (ap.startsWith("p") && h < 12) h += 12;
+  const context = text.toLowerCase();
+  if ((ap.startsWith("p") || /(?:de|por|en)\s+la\s+(tarde|noche)/i.test(context)) && h < 12) h += 12;
   if (ap.startsWith("a") && h === 12) h = 0;
   const time = `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
   return { text: stripWords(text, [m[0]]), time };
@@ -75,27 +83,6 @@ function getRecognition(): SpeechRecognition | null {
   };
   const Ctor = W.SpeechRecognition || W.webkitSpeechRecognition;
   return Ctor ? new Ctor() : null;
-}
-
-function pickVoice(): SpeechSynthesisVoice | null {
-  const vs = window.speechSynthesis.getVoices();
-  const spanish = vs.filter((v) => v.lang.toLowerCase().startsWith("es"));
-  if (!spanish.length) return null;
-  const locale = navigator.language.toLowerCase().startsWith("es")
-    ? navigator.language.toLowerCase()
-    : "es-pe";
-  const score = (voice: SpeechSynthesisVoice) => {
-    const name = voice.name.toLowerCase();
-    const lang = voice.lang.toLowerCase();
-    let value = 0;
-    if (lang === locale) value += 60;
-    if (/es-(pe|mx|us|co|ar|cl)/.test(lang)) value += 30;
-    if (/pablo|jorge|diego|javier|andres|andrés|alvaro|álvaro|raul|raúl|male|hombre/.test(name)) value += 20;
-    if (voice.localService) value += 8;
-    if (voice.default) value += 4;
-    return value;
-  };
-  return [...spanish].sort((a, b) => score(b) - score(a))[0] ?? null;
 }
 
 const ORB_SIZE = 120;
@@ -243,7 +230,7 @@ export function NeuralOrb({ active }: { active: boolean }) {
 const HOLOGRAM_W = 420;
 const HOLOGRAM_H = 230;
 
-function HologramStage({ active }: { active: boolean }) {
+export function HologramStage({ active }: { active: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -393,6 +380,143 @@ function HologramStage({ active }: { active: boolean }) {
   return <canvas ref={ref} className="jarvis-hologram-canvas" aria-hidden="true" />;
 }
 
+type JarvisVisualMode = "idle" | "listening" | "thinking" | "speaking";
+
+export function BlueCoreStage({ mode }: { mode: JarvisVisualMode }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = ref.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = HOLOGRAM_W * dpr;
+    canvas.height = HOLOGRAM_H * dpr;
+    ctx.scale(dpr, dpr);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let raf = 0;
+
+    const draw = (time: number) => {
+      const phase = reduceMotion ? 0 : time;
+      const cx = HOLOGRAM_W / 2;
+      const cy = HOLOGRAM_H / 2 - 2;
+      const speakingBeat = mode === "speaking"
+        ? Math.pow((Math.sin(phase / 155) + 1) / 2, 4)
+        : 0;
+      const listeningPulse = mode === "listening" ? (Math.sin(phase / 230) + 1) * 0.5 : 0;
+      const energy = mode === "idle" ? 0.58 : 0.82;
+      const coreScale = 1 + Math.sin(phase / 820) * 0.035 + speakingBeat * 0.13;
+
+      ctx.clearRect(0, 0, HOLOGRAM_W, HOLOGRAM_H);
+
+      const space = ctx.createRadialGradient(cx, cy, 8, cx, cy, 142);
+      space.addColorStop(0, `rgba(28, 185, 255, ${0.13 + speakingBeat * 0.08})`);
+      space.addColorStop(0.48, "rgba(19, 111, 215, 0.045)");
+      space.addColorStop(1, "rgba(4, 55, 130, 0)");
+      ctx.fillStyle = space;
+      ctx.fillRect(54, 0, HOLOGRAM_W - 108, HOLOGRAM_H);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      for (let ring = 0; ring < 3; ring++) {
+        const progress = ((phase / (2200 - ring * 280)) + ring * 0.34) % 1;
+        const radius = 62 + progress * 72;
+        const alpha = (1 - progress) * (mode === "speaking" ? 0.25 + speakingBeat * 0.32 : 0.16);
+        ctx.strokeStyle = `rgba(78, 215, 255, ${alpha})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.rotate(phase / (mode === "thinking" ? 1050 : 3200));
+      for (let i = 0; i < 36; i++) {
+        const start = (i / 36) * Math.PI * 2;
+        const major = i % 4 === 0;
+        ctx.strokeStyle = `rgba(83, 218, 255, ${major ? 0.74 : 0.26})`;
+        ctx.lineWidth = major ? 1.5 : 0.7;
+        ctx.beginPath();
+        ctx.arc(0, 0, 88, start, start + (major ? 0.1 : 0.045));
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-phase / 2700);
+      ctx.strokeStyle = `rgba(105, 226, 255, ${0.32 + listeningPulse * 0.2})`;
+      ctx.shadowColor = "rgba(44, 194, 255, 0.8)";
+      ctx.shadowBlur = 8;
+      for (let i = 0; i < 4; i++) {
+        ctx.lineWidth = i === 0 ? 1.2 : 0.7;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 72 - i * 7, 27 + i * 7, i * 0.62, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.strokeStyle = `rgba(142, 238, 255, ${0.28 + energy * 0.28})`;
+      ctx.lineWidth = mode === "speaking" ? 1.4 : 0.9;
+      ctx.beginPath();
+      for (let i = 0; i <= 120; i++) {
+        const angle = (i / 120) * Math.PI * 2;
+        const voiceWave = mode === "speaking"
+          ? Math.sin(angle * 9 + phase / 80) * (5 + speakingBeat * 8)
+          : Math.sin(angle * 7 + phase / 260) * 2.4;
+        const radius = 51 * coreScale + voiceWave;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+
+      const core = ctx.createRadialGradient(cx - 12, cy - 15, 2, cx, cy, 58 * coreScale);
+      core.addColorStop(0, "rgba(245, 253, 255, 1)");
+      core.addColorStop(0.1, "rgba(151, 237, 255, 0.98)");
+      core.addColorStop(0.3, `rgba(41, 190, 255, ${0.84 + speakingBeat * 0.12})`);
+      core.addColorStop(0.66, "rgba(12, 101, 225, 0.22)");
+      core.addColorStop(1, "rgba(4, 67, 180, 0)");
+      ctx.fillStyle = core;
+      ctx.shadowColor = "rgba(48, 202, 255, 0.95)";
+      ctx.shadowBlur = 22 + speakingBeat * 30;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 58 * coreScale, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      for (let i = 0; i < 72; i++) {
+        const angle = i * 2.399 + phase / (1600 + (i % 5) * 210);
+        const radius = 24 + ((i * 19) % 83);
+        const x = cx + Math.cos(angle) * radius;
+        const y = cy + Math.sin(angle) * radius * 0.72;
+        ctx.fillStyle = `rgba(124, 231, 255, ${0.24 + (i % 6) * 0.1})`;
+        ctx.beginPath();
+        ctx.arc(x, y, i % 10 === 0 ? 1.8 + speakingBeat : 0.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const scanY = reduceMotion ? cy : 28 + ((phase / 17) % 170);
+      const scan = ctx.createLinearGradient(92, scanY, HOLOGRAM_W - 92, scanY);
+      scan.addColorStop(0, "rgba(95, 228, 255, 0)");
+      scan.addColorStop(0.5, `rgba(152, 244, 255, ${mode === "speaking" ? 0.5 : 0.22})`);
+      scan.addColorStop(1, "rgba(95, 228, 255, 0)");
+      ctx.fillStyle = scan;
+      ctx.fillRect(92, scanY, HOLOGRAM_W - 184, 1);
+
+      if (!reduceMotion) raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [mode]);
+
+  return <canvas ref={ref} className="jarvis-hologram-canvas" aria-hidden="true" />;
+}
+
 export default function Jarvis() {
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);
@@ -426,14 +550,8 @@ export default function Jarvis() {
   const speak = (text: string) => {
     if (!("speechSynthesis" in window)) return;
     const id = ++speakId.current;
-    const u = new SpeechSynthesisUtterance(text);
+    const u = cinematicSpanish(text);
     if (!voicesReady.current) window.speechSynthesis.getVoices();
-    const v = pickVoice();
-    if (v) u.voice = v;
-    u.lang = v?.lang || "es-PE";
-    u.pitch = 0.84;
-    u.rate = 0.96;
-    u.volume = 1;
     const done = () => {
       if (speakId.current === id) setSpeaking(false);
     };
@@ -462,12 +580,14 @@ export default function Jarvis() {
     const today = dateKey(now);
 
     const parseDue = (txt: string): string => {
-      if (/mañana/.test(txt)) return dateKey(addDays(now, 1));
+      // Un día explícito siempre gana: "lunes en la mañana" significa lunes,
+      // no "mañana" como el día siguiente.
       const wd = findWeekday(txt);
       if (wd !== null) {
         const diff = (wd - now.getDay() + 7) % 7 || 7;
         return dateKey(addDays(now, diff));
       }
+      if (/mañana|manana/.test(txt)) return dateKey(addDays(now, 1));
       return today;
     };
 
@@ -516,8 +636,10 @@ export default function Jarvis() {
       if (app) return openWeb(app[1], app[2]);
     }
 
-    if (/^(hola|hey|ey|buenas|o+la)\b/.test(low) && /jarvis|asistente|habi/i.test(low)) {
-      return "A sus órdenes. ¿Qué hacemos hoy?";
+    if (/^(hola|hey|ey|buenas|o+la)\b/.test(low)) {
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? "Buenos días" : hour < 19 ? "Buenas tardes" : "Buenas noches";
+      return `${greeting}, jefe. Estoy en línea y a sus órdenes. ¿Qué necesita?`;
     }
 
     if (/qué tengo|que tengo|resumen|como voy|cómo voy|qué hay hoy|que hay hoy|mis pendientes|estado del día/i.test(low)) {
@@ -570,6 +692,26 @@ export default function Jarvis() {
     }
     if (/\b(ve(?:r|amos|ríamos)?|abre|abrir|muestra|muéstrame|pon|reproduce|reproducir)\b.*(música|musica|canción|cancion|spotify)/i.test(low)) {
       return "La música está aquí mismo, en la página de inicio.";
+    }
+
+    if (/\b(alarma|despertador|despiértame|despertarme|despertar)\b/i.test(low)) {
+      const parsed = stripTime(raw);
+      const time = parsed.time || (/\b(mañana|manana)\b/i.test(low) ? "07:00" : "08:00");
+      const purpose = /\b(despertarme|despertar|despiértame)\b/i.test(low)
+        ? "Despertar"
+        : "Alarma";
+      const dueDate = parseDue(low);
+      s.addTask({
+        title: purpose,
+        description: raw.trim(),
+        dueDate,
+        dueTime: time,
+        priority: "alta",
+        status: "pending",
+        remind: true
+      });
+      toast(`Alarma: ${dueDate} a las ${time}`, "⏰");
+      return `Alarma programada para el ${dueDate}, a las ${time}.`;
     }
 
     const mealMatch = low.match(/^.*?(desayuno|almuerzo|cena|snack)/i);
@@ -648,6 +790,7 @@ export default function Jarvis() {
 
   const handleCommand = async (text: string) => {
     let r = dispatch(text);
+    const handledLocally = Boolean(r);
     if (!r && aiConfigured(useStore.getState().data.settings.ai)) {
       setThinking(true);
       setReply("Procesando tu consulta…");
@@ -660,6 +803,9 @@ export default function Jarvis() {
       }
     }
     if (!r) r = "No entendí la instrucción. Puedes pedirme una tarea, una comida, un curso o tu resumen de hoy.";
+    if (handledLocally && /^(Abriendo|Registrado|Preparé|Tarea registrada|Curso |Idea registrada)/i.test(r)) {
+      r = `Entendido, jefe. ${r}`;
+    }
     setReply(r);
     speak(r);
   };
@@ -669,6 +815,8 @@ export default function Jarvis() {
       recRef.current?.stop();
       return;
     }
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    setSpeaking(false);
     const rec = getRecognition();
     if (!rec) {
       setSupported(false);
@@ -732,8 +880,12 @@ export default function Jarvis() {
         aria-label={listening ? "Detener escucha" : "Hablar con Jarvis"}
         disabled={!supported}
       >
-        <span className={`jarvis-hologram ${listening || speaking || thinking ? "active" : ""}`}>
-          <HologramStage active={listening || speaking || thinking} />
+        <span className={`jarvis-hologram ${listening ? "listening" : ""} ${thinking ? "thinking" : ""} ${speaking ? "speaking" : ""}`}>
+          <JarvisSphere3D
+            mode={listening ? "listening" : thinking ? "thinking" : speaking ? "speaking" : "idle"}
+          />
+          <i className="jarvis-generated-pulse pulse-one" aria-hidden="true" />
+          <i className="jarvis-generated-pulse pulse-two" aria-hidden="true" />
         </span>
       </button>
 
@@ -741,17 +893,17 @@ export default function Jarvis() {
         <div className="jarvis-title">
           JARVIS <span className="jarvis-dot" />
         </div>
-        <div className="jarvis-state" aria-live="polite">
-          {listening
-            ? "Escuchando…"
-            : thinking
-              ? "Pensando…"
-              : speaking
-                ? "Respondiendo…"
-                : reply
-                  ? "Listo para ayudarte"
-                  : "Tu asistente personal en español"}
-        </div>
+        {(listening || thinking || speaking || reply) && (
+          <div className="jarvis-state" aria-live="polite">
+            {listening
+              ? "Escuchando…"
+              : thinking
+                ? "Pensando…"
+                : speaking
+                  ? "Respondiendo…"
+                  : "Listo para ayudarte"}
+          </div>
+        )}
       </div>
 
       <button

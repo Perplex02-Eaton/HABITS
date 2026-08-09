@@ -3,32 +3,44 @@ import { audioEngine, FREQUENCIES } from "../lib/audio";
 import { updateMediaSession, clearMediaSession, spotifyEmbedUrl } from "../lib/mediaSession";
 import {
   getSpotifyToken,
-  setSpotifyToken,
+  getSpotifyAccessToken,
   clearSpotifyToken,
   spotifyAuthUrl,
-  parseSpotifyCallback,
+  completeSpotifyLogin,
+  getSpotifyProfile,
+  getSpotifyLibrary,
+  hasSpotifySession,
   searchSpotify,
-  type SpotifyItem
+  type SpotifyItem,
+  type SpotifyProfile
 } from "../lib/spotify";
 import { useStore } from "../stores/useStore";
 import { toast } from "../stores/useToasts";
 import { IconPlay, IconStop, IconMusic, IconExternal, IconSearch } from "./ui/Icons";
 
-export default function MusicPanel() {
-  const spotifyClientId = useStore((s) => s.data.settings.spotifyClientId);
+interface MusicPanelProps {
+  compact?: boolean;
+}
 
-  const [tab, setTab] = useState<"freq" | "music">("freq");
+export default function MusicPanel({ compact = false }: MusicPanelProps) {
+  const spotifyClientId = useStore((s) => s.data.settings.spotifyClientId);
+  const configuredClientId = ((import.meta.env.VITE_SPOTIFY_CLIENT_ID as string | undefined) || spotifyClientId).trim();
+
+  const [tab, setTab] = useState<"freq" | "music">("music");
   const [playing, setPlaying] = useState(audioEngine.isPlaying());
   const [freq, setFreq] = useState(audioEngine.getFrequency());
   const [volume, setVolume] = useState(audioEngine.getVolume());
 
-  const [connected, setConnected] = useState(Boolean(getSpotifyToken()));
+  const [connected, setConnected] = useState(hasSpotifySession());
+  const [profile, setProfile] = useState<SpotifyProfile | null>(null);
+  const [library, setLibrary] = useState<SpotifyItem[]>([]);
+  const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SpotifyItem[]>([]);
   const [searching, setSearching] = useState(false);
   const [embed, setEmbed] = useState<string | null>(null);
   const [pasteInput, setPasteInput] = useState("");
-  const [state] = useState(() => Math.random().toString(36).slice(2, 12));
+  const [expanded, setExpanded] = useState(!compact);
 
   const active = FREQUENCIES.find((p) => p.freq === freq);
 
@@ -46,14 +58,40 @@ export default function MusicPanel() {
   }, [playing, freq, active]);
 
   useEffect(() => {
-    const token = parseSpotifyCallback(window.location.hash);
-    if (token) {
-      setSpotifyToken(token.access, token.expiresIn);
-      setConnected(true);
-      window.history.replaceState(null, "", window.location.pathname + window.location.search);
-      toast("Conectado con Spotify", "🎧");
-    }
-  }, []);
+    let active = true;
+    const restoreSpotify = async () => {
+      const redirect = window.location.origin + window.location.pathname;
+      try {
+        const completed = configuredClientId
+          ? await completeSpotifyLogin(window.location.search, configuredClientId, redirect)
+          : false;
+        if (completed) {
+          window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+          toast("Spotify conectado", "🎧");
+        }
+        const token = getSpotifyToken() ?? await getSpotifyAccessToken(configuredClientId);
+        if (!token || !active) return;
+        setConnected(true);
+        setLoadingLibrary(true);
+        const [account, personalLibrary] = await Promise.all([
+          getSpotifyProfile(token),
+          getSpotifyLibrary(token)
+        ]);
+        if (!active) return;
+        setProfile(account);
+        setLibrary(personalLibrary);
+      } catch {
+        if (!active) return;
+        clearSpotifyToken();
+        setConnected(false);
+        toast("No se pudo conectar con Spotify", "⚠️");
+      } finally {
+        if (active) setLoadingLibrary(false);
+      }
+    };
+    void restoreSpotify();
+    return () => { active = false; };
+  }, [configuredClientId]);
 
   const toggleFreq = (f: number) => {
     audioEngine.toggle(f);
@@ -61,17 +99,17 @@ export default function MusicPanel() {
     setFreq(audioEngine.getFrequency());
   };
 
-  const connect = () => {
-    if (!spotifyClientId.trim()) {
+  const connect = async () => {
+    if (!configuredClientId) {
       toast("Primero pon tu Spotify Client ID en Ajustes", "⚠️");
       return;
     }
     const redirect = window.location.origin + window.location.pathname;
-    window.location.href = spotifyAuthUrl(spotifyClientId.trim(), redirect, state);
+    window.location.href = await spotifyAuthUrl(configuredClientId, redirect);
   };
 
   const doSearch = async () => {
-    const token = getSpotifyToken();
+    const token = getSpotifyToken() ?? await getSpotifyAccessToken(configuredClientId);
     if (!token) {
       toast("Conecta tu cuenta de Spotify primero", "🎧");
       return;
@@ -101,18 +139,40 @@ export default function MusicPanel() {
   const playEmbed = (u: string) => setEmbed(u);
 
   return (
-    <div className="card reveal">
-      <div className="card-section">
+    <div className={`card reveal music-panel ${compact ? "music-panel-compact" : ""}`}>
+      <div className="card-section music-panel-section">
         <div className="row-between">
-          <div className="row">
-            <span style={{ fontSize: 22 }}>🎵</span>
-            <div>
+          <div className="row music-panel-summary">
+            <span className="music-panel-icon"><IconMusic size={17} /></span>
+            <div className="grow">
               <div className="list-title">Música</div>
-              <div className="list-sub">Frecuencias y tu cuenta de Spotify</div>
+              <div className="list-sub music-panel-status">
+                {connected ? `Spotify · ${profile?.displayName ?? "Conectado"}` : playing ? active?.name : `${freq} Hz`}
+              </div>
             </div>
           </div>
+          {compact && (
+            <div className="row music-panel-actions">
+              <button
+                className={`music-quick-play ${playing ? "active" : ""}`}
+                onClick={() => toggleFreq(freq)}
+                aria-label={playing ? "Pausar música" : "Reproducir frecuencia"}
+              >
+                {playing ? <IconStop size={15} /> : <IconPlay size={15} />}
+              </button>
+              <button
+                className="music-expand-button"
+                onClick={() => setExpanded((value) => !value)}
+                aria-expanded={expanded}
+              >
+                {expanded ? "Cerrar" : "Opciones"}
+              </button>
+            </div>
+          )}
         </div>
 
+        {expanded && (
+          <>
         <div className="segmented mt-16">
           <button className={tab === "freq" ? "active" : ""} onClick={() => setTab("freq")}>
             Frecuencias
@@ -196,6 +256,36 @@ export default function MusicPanel() {
               </div>
             ) : (
               <>
+                {profile && (
+                  <div className="spotify-account">
+                    {profile.image ? <img src={profile.image} alt="" /> : <span><IconMusic size={17} /></span>}
+                    <div className="grow">
+                      <div className="list-title">{profile.displayName}</div>
+                      <div className="list-sub">Spotify conectado{profile.product ? ` · ${profile.product}` : ""}</div>
+                    </div>
+                    <span className="spotify-connected-dot" aria-label="Conectado" />
+                  </div>
+                )}
+
+                {(loadingLibrary || library.length > 0) && (
+                  <div className="spotify-library mt-16">
+                    <div className="small muted">Tu biblioteca</div>
+                    {loadingLibrary ? (
+                      <div className="small muted mt-8">Cargando tu música…</div>
+                    ) : (
+                      <div className="spotify-library-strip mt-8">
+                        {library.map((item) => (
+                          <button key={`${item.type}-${item.id}`} onClick={() => playEmbed(item.embedUrl)}>
+                            {item.image ? <img src={item.image} alt="" /> : <span><IconMusic size={18} /></span>}
+                            <strong>{item.name}</strong>
+                            <small>{item.type === "playlist" ? "Playlist" : "Guardada"}</small>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="row" style={{ gap: 8 }}>
                   <div className="grow">
                     <div className="row" style={{ gap: 6, background: "var(--fill)", borderRadius: 14, padding: "4px 6px 4px 14px" }}>
@@ -273,7 +363,7 @@ export default function MusicPanel() {
                   >
                     <IconExternal size={13} /> Abrir Spotify
                   </button>
-                  <button className="btn btn-secondary btn-sm" onClick={() => { clearSpotifyToken(); setConnected(false); setResults([]); }}>
+                  <button className="btn btn-secondary btn-sm" onClick={() => { clearSpotifyToken(); setConnected(false); setProfile(null); setLibrary([]); setResults([]); setEmbed(null); }}>
                     Cerrar sesión
                   </button>
                 </div>
@@ -290,6 +380,8 @@ export default function MusicPanel() {
               <button className="btn btn-secondary" onClick={playPaste}>Reproducir</button>
             </div>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>

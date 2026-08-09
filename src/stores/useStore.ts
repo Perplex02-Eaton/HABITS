@@ -8,6 +8,7 @@ import type {
   Metric,
   Settings,
   Note,
+  FixedGoal,
   CalendarEvent
 } from "../lib/types";
 import { defaultAiConfig } from "../lib/ai";
@@ -16,11 +17,11 @@ import {
   isCloudEnabled,
   initSession,
   currentUser,
-  signInAnonymously,
   signOut as supabaseSignOut,
   pushData,
   pullData
 } from "../lib/supabase";
+import { fetchAccess } from "../lib/billing";
 import { toast } from "./useToasts";
 
 const STORAGE_KEY = "habits:data:v1";
@@ -68,6 +69,7 @@ export function defaultData(): AppData {
     calendarEvents: [],
     metrics: [],
     notes: [],
+    fixedGoals: [],
     settings: {
       name: "",
       xHandle: "",
@@ -132,13 +134,17 @@ interface StoreState {
   addNote: (n: Omit<Note, "id" | "createdAt" | "updatedAt">) => string;
   updateNote: (id: string, patch: Partial<Note>) => void;
   deleteNote: (id: string) => void;
+  addFixedGoal: (goal: Omit<FixedGoal, "id" | "createdAt" | "completions">) => void;
+  updateFixedGoal: (id: string, patch: Partial<FixedGoal>) => void;
+  deleteFixedGoal: (id: string) => void;
+  setGoalCompletion: (id: string, date: string, count: number) => void;
 }
 
 export const useStore = create<StoreState>((set, get) => ({
   data: defaultData(),
   hydrated: false,
   syncing: false,
-  cloudEnabled: isCloudEnabled(),
+  cloudEnabled: false,
   cloudUser: currentUser(),
 
   persist() {
@@ -195,11 +201,18 @@ export const useStore = create<StoreState>((set, get) => ({
       return false;
     }
     if (!get().cloudUser) {
-      const user = await signInAnonymously();
+      const user = currentUser();
       if (!user) {
-        toast("No se pudo iniciar sesión", "⚠️");
+        toast("Inicia sesión para activar la nube", "🔐");
         return false;
       }
+      set({ cloudUser: user });
+    }
+    const access = await fetchAccess();
+    if (access.plan !== "student" && access.plan !== "owner") {
+      set({ cloudEnabled: false, cloudUser: currentUser() });
+      toast("La sincronización está incluida en el plan Estudiante", "✦");
+      return false;
     }
     set({ cloudEnabled: true, cloudUser: currentUser() });
     await get().pullCloud();
@@ -303,13 +316,43 @@ export const useStore = create<StoreState>((set, get) => ({
       }
     })),
   deleteNote: (id) =>
-    set((s) => ({ data: { ...s.data, notes: s.data.notes.filter((n) => n.id !== id) } }))
+    set((s) => ({ data: { ...s.data, notes: s.data.notes.filter((n) => n.id !== id) } })),
+  addFixedGoal: (goal) =>
+    set((s) => ({
+      data: {
+        ...s.data,
+        fixedGoals: [{ ...goal, id: uid(), completions: {}, createdAt: Date.now() }, ...s.data.fixedGoals]
+      }
+    })),
+  updateFixedGoal: (id, patch) =>
+    set((s) => ({
+      data: {
+        ...s.data,
+        fixedGoals: s.data.fixedGoals.map((goal) => goal.id === id ? { ...goal, ...patch } : goal)
+      }
+    })),
+  deleteFixedGoal: (id) =>
+    set((s) => ({ data: { ...s.data, fixedGoals: s.data.fixedGoals.filter((goal) => goal.id !== id) } })),
+  setGoalCompletion: (id, date, count) =>
+    set((s) => ({
+      data: {
+        ...s.data,
+        fixedGoals: s.data.fixedGoals.map((goal) => goal.id === id
+          ? { ...goal, completions: { ...goal.completions, [date]: Math.max(0, Math.round(count)) } }
+          : goal)
+      }
+    }))
 }));
 
 export function initStore() {
   useStore.setState({ data: loadLocal(), hydrated: false, cloudUser: currentUser() });
-  void initSession().then(() => useStore.setState({ cloudUser: currentUser() }));
-  void useStore.getState().pullCloud();
+  void initSession().then(async () => {
+    const access = await fetchAccess();
+    const premium = access.plan === "student" || access.plan === "owner";
+    useStore.setState({ cloudUser: currentUser(), cloudEnabled: premium });
+    if (premium) await useStore.getState().pullCloud();
+    else useStore.setState({ hydrated: true });
+  });
 }
 
 useStore.subscribe((state, prev) => {
