@@ -34,6 +34,9 @@ export default function Pricing() {
       </header>
 
       {access.isOwner && <div className="owner-banner">✓ Cuenta propietaria · acceso total permanente</div>}
+      {access.subscriptionStatus === "complimentary" && (
+        <div className="owner-banner">✓ Cuenta invitada · acceso total permanente</div>
+      )}
 
       <section className="pricing-grid">
         <article className="pricing-card">

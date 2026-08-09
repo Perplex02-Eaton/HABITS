@@ -8,11 +8,12 @@ import Empty from "../components/ui/Empty";
 import ConfirmSheet from "../components/ui/ConfirmSheet";
 import { IconPlus, IconTrash, IconTrendingUp } from "../components/ui/Icons";
 
-const CATEGORIES = ["Académico", "Salud", "Disciplina", "Energía", "Foco", "Metas diarias"];
+const CATEGORIES = ["Académico", "Salud", "Disciplina", "Energía", "Foco", "Metas diarias", "Bienestar diario"];
 
 export default function Performance() {
   const metrics = useStore((s) => s.data.metrics);
   const fixedGoals = useStore((s) => s.data.fixedGoals ?? []);
+  const dailyCheckIns = useStore((s) => s.data.dailyCheckIns ?? []);
   const addMetric = useStore((s) => s.addMetric);
   const deleteMetric = useStore((s) => s.deleteMetric);
 
@@ -45,10 +46,17 @@ export default function Performance() {
     });
   }, [fixedGoals]);
 
+  const wellbeingMetrics = useMemo(() => dailyCheckIns.map((entry) => ({
+    id: `wellbeing-${entry.date}`,
+    date: entry.date,
+    category: "Bienestar diario",
+    value: Math.round((entry.mood * 20 + entry.energy * 20 + Math.min(100, (entry.sleepHours / 8) * 100) + Math.min(100, (entry.waterGlasses / 8) * 100)) / 4)
+  })), [dailyCheckIns]);
+
   const catMetrics = useMemo(
-    () => (category === "Metas diarias" ? goalMetrics : metrics.filter((metric) => metric.category === category))
+    () => (category === "Metas diarias" ? goalMetrics : category === "Bienestar diario" ? wellbeingMetrics : metrics.filter((metric) => metric.category === category))
       .sort((a, b) => a.date.localeCompare(b.date)),
-    [metrics, goalMetrics, category]
+    [metrics, goalMetrics, wellbeingMetrics, category]
   );
 
   useEffect(() => {

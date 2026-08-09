@@ -1,16 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0A84FF"/>
-      <stop offset="1" stop-color="#5E5CE6"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#10131B"/>
+      <stop offset="1" stop-color="#020409"/>
     </linearGradient>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1C1C24"/>
-      <stop offset="1" stop-color="#0A0A0F"/>
+    <linearGradient id="energy" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#A7F1FF"/>
+      <stop offset=".42" stop-color="#20C8FF"/>
+      <stop offset="1" stop-color="#1769FF"/>
     </linearGradient>
+    <radialGradient id="core">
+      <stop stop-color="#E8FCFF" stop-opacity=".95"/>
+      <stop offset=".18" stop-color="#56DFFF" stop-opacity=".72"/>
+      <stop offset=".58" stop-color="#087BFF" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#087BFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
   <rect x="8" y="8" width="496" height="496" rx="112" fill="url(#bg)"/>
-  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#g)" stroke-width="22" opacity="0.35"/>
-  <path d="M110 300 L200 210 L262 262 L330 168 L402 236 L402 236" fill="none" stroke="url(#g)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M110 362 L200 272 L262 324 L330 230 L402 298" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+  <circle cx="256" cy="256" r="112" fill="url(#core)"/>
+
+  <g fill="none" stroke-linecap="round" filter="url(#glow)">
+    <path d="M104 202A164 164 0 0 1 218 97" stroke="#22C9FF" stroke-width="13"/>
+    <path d="M258 91A164 164 0 0 1 400 179" stroke="#157CFF" stroke-width="8"/>
+    <path d="M416 222A164 164 0 0 1 392 355" stroke="#51DBFF" stroke-width="13"/>
+    <path d="M354 397A164 164 0 0 1 235 419" stroke="#1769FF" stroke-width="8"/>
+    <path d="M194 407A164 164 0 0 1 97 302" stroke="#20C8FF" stroke-width="13"/>
+
+    <path d="M134 239A126 126 0 0 1 232 133" stroke="#8BEBFF" stroke-width="4" opacity=".9"/>
+    <path d="M275 132A126 126 0 0 1 373 224" stroke="#248CFF" stroke-width="5" opacity=".72"/>
+    <path d="M370 281A126 126 0 0 1 283 375" stroke="#83E9FF" stroke-width="4" opacity=".9"/>
+    <path d="M226 376A126 126 0 0 1 137 292" stroke="#248CFF" stroke-width="5" opacity=".72"/>
+  </g>
+
+  <g fill="#7DE8FF">
+    <rect x="81" y="245" width="28" height="5" rx="2.5" transform="rotate(-8 95 247)"/>
+    <rect x="111" y="135" width="35" height="5" rx="2.5" transform="rotate(44 128 138)"/>
+    <rect x="343" y="105" width="30" height="5" rx="2.5" transform="rotate(35 358 108)"/>
+    <rect x="405" y="300" width="30" height="5" rx="2.5" transform="rotate(98 420 303)"/>
+    <rect x="111" y="363" width="34" height="5" rx="2.5" transform="rotate(-45 128 366)"/>
+  </g>
+
+  <!-- Firma original de HABITS: progreso ascendente -->
+  <path d="M127 304L204 227L263 277L330 184L390 240" fill="none" stroke="url(#energy)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M127 355L204 278L263 328L330 235L390 291" fill="none" stroke="#F2FCFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".96"/>
+  <circle cx="263" cy="277" r="9" fill="#DFFAFF" filter="url(#glow)"/>
 </svg>

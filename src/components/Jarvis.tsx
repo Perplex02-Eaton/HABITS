@@ -648,11 +648,16 @@ export default function Jarvis() {
       const plan = s.data.mealPlans.find((p) => p.date === today);
       const meals = plan ? plan.meals.filter((m) => !m.consumed).length : 0;
       const events = s.data.calendarEvents.filter((event) => event.date === today).length;
+      const routines = (s.data.fixedGoals ?? []).filter((goal) => goal.active);
+      const routineDone = routines.filter((goal) => (goal.completions?.[today] ?? 0) >= goal.targetPerDay).length;
+      const checkIn = (s.data.dailyCheckIns ?? []).find((entry) => entry.date === today);
       const parts: string[] = [];
       if (todayPending.length) parts.push(`${todayPending.length} tarea${todayPending.length === 1 ? "" : "s"} para hoy`);
       if (events) parts.push(`${events} evento${events === 1 ? "" : "s"} en tu agenda`);
       if (meals) parts.push(`${meals} comida${meals === 1 ? "" : "s"} por marcar`);
       if (s.data.courses.length) parts.push(`${s.data.courses.length} curso${s.data.courses.length === 1 ? "" : "s"} registrados`);
+      if (routines.length) parts.push(`${routineDone} de ${routines.length} rutinas completadas`);
+      if (checkIn) parts.push(`energía ${checkIn.energy} de 5 y ${checkIn.sleepHours} horas de sueño`);
       return parts.length ? parts.join(". ") + "." : "Todo en orden. No hay pendientes por hoy.";
     }
 

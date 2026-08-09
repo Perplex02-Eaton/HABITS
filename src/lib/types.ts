@@ -152,6 +152,18 @@ export interface FixedGoal {
   createdAt: number;
 }
 
+export interface DailyCheckIn {
+  date: string;
+  mood: number;
+  energy: number;
+  sleepHours: number;
+  waterGlasses: number;
+  intention: string;
+  gratitude: string;
+  dailyWin: string;
+  updatedAt: number;
+}
+
 export interface AppData {
   courses: Course[];
   mealPlans: MealPlan[];
@@ -161,5 +173,6 @@ export interface AppData {
   metrics: Metric[];
   notes: Note[];
   fixedGoals: FixedGoal[];
+  dailyCheckIns: DailyCheckIn[];
   settings: Settings;
 }

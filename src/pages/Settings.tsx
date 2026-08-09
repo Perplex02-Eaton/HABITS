@@ -395,15 +395,25 @@ export default function Settings() {
           {cloudEnabled && cloudUser?.email && (
             <>
               <div className="account-plan-row mt-16">
-                <span>{access.isOwner ? "Propietario" : access.plan === "student" ? "Estudiante" : "Gratis"}</span>
-                {access.isOwner && <b>Acceso total</b>}
+                <span>
+                  {access.isOwner
+                    ? "Propietario"
+                    : access.subscriptionStatus === "complimentary"
+                      ? "Cuenta invitada"
+                      : access.plan === "student"
+                        ? "Estudiante"
+                        : "Gratis"}
+                </span>
+                {(access.isOwner || access.subscriptionStatus === "complimentary") && <b>Acceso total</b>}
               </div>
               <p className="muted small mt-8" style={{ lineHeight: 1.5 }}>
                 <IconCloud size={13} /> Tus datos se sincronizan automáticamente entre tu celular, tablet y laptop.
               </p>
             </>
           )}
-          {!access.isOwner && <Link className="btn btn-primary btn-block mt-16" to="/planes">Ver planes</Link>}
+          {access.plan !== "owner" && access.plan !== "student" && (
+            <Link className="btn btn-primary btn-block mt-16" to="/planes">Ver planes</Link>
+          )}
         </div>
 
         {installEvt && (

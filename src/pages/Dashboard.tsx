@@ -5,6 +5,7 @@ import { fetchNews, relativeTime } from "../lib/news";
 import type { NewsItem } from "../lib/news";
 import MusicPanel from "../components/MusicPanel";
 import Jarvis from "../components/Jarvis";
+import DailyCommandCenter from "../components/DailyCommandCenter";
 import {
   todayKey,
   formatLong,
@@ -148,6 +149,7 @@ export default function Dashboard() {
       <div className="stack">
         <MusicPanel compact />
         <Jarvis />
+        <DailyCommandCenter />
 
         {nextPersonalEvent && (
           <Link to="/agenda" className="card card-section reveal" style={{ textDecoration: "none" }}>

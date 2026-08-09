@@ -47,6 +47,21 @@ create table if not exists public.app_admins (
 alter table public.app_admins enable row level security;
 -- No se crean políticas de escritura: solo service_role/SQL puede nombrar admins.
 
+-- Accesos completos concedidos por el propietario. Estas cuentas disfrutan de
+-- todas las funciones premium, pero nunca reciben permisos de propietario.
+create table if not exists public.access_grants (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  label text not null default 'Cortesía',
+  expires_at timestamptz,
+  created_at timestamptz not null default now()
+);
+alter table public.access_grants enable row level security;
+
+drop policy if exists "select own access grant" on public.access_grants;
+create policy "select own access grant" on public.access_grants
+  for select using (auth.uid() = user_id);
+-- No se crean políticas de escritura: solo service_role/SQL puede concederlas.
+
 create table if not exists public.subscriptions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -84,12 +99,27 @@ as $$
   select
     case
       when exists(select 1 from public.app_admins a where a.user_id = auth.uid()) then 'owner'
+      when exists(
+        select 1 from public.access_grants g
+        where g.user_id = auth.uid()
+          and (g.expires_at is null or g.expires_at > now())
+      ) then 'student'
       when s.status = 'authorized' and (s.current_period_end is null or s.current_period_end > now()) then 'student'
       else 'free'
     end,
     exists(select 1 from public.app_admins a where a.user_id = auth.uid()),
-    coalesce(s.status, 'none'),
-    s.current_period_end
+    case
+      when exists(
+        select 1 from public.access_grants g
+        where g.user_id = auth.uid()
+          and (g.expires_at is null or g.expires_at > now())
+      ) then 'complimentary'
+      else coalesce(s.status, 'none')
+    end,
+    coalesce(
+      (select g.expires_at from public.access_grants g where g.user_id = auth.uid()),
+      s.current_period_end
+    )
   from (select 1) seed
   left join lateral (
     select status, current_period_end
@@ -112,6 +142,11 @@ stable
 as $$
   select
     exists(select 1 from public.app_admins a where a.user_id = auth.uid())
+    or exists(
+      select 1 from public.access_grants g
+      where g.user_id = auth.uid()
+        and (g.expires_at is null or g.expires_at > now())
+    )
     or exists(
       select 1 from public.subscriptions s
       where s.user_id = auth.uid()
@@ -138,3 +173,8 @@ create policy "update own premium data" on public.habits_data
 -- insert into public.app_admins(user_id)
 -- select id from auth.users where email = 'TU_CORREO@EJEMPLO.COM'
 -- on conflict (user_id) do nothing;
+
+-- Para conceder acceso completo permanente a una cuenta sin volverla propietaria:
+-- insert into public.access_grants(user_id, label)
+-- select id, 'Acceso invitado' from auth.users where lower(email) = lower('CORREO@EJEMPLO.COM')
+-- on conflict (user_id) do update set label = excluded.label, expires_at = null;

@@ -9,6 +9,7 @@ import type {
   Settings,
   Note,
   FixedGoal,
+  DailyCheckIn,
   CalendarEvent
 } from "../lib/types";
 import { defaultAiConfig } from "../lib/ai";
@@ -70,6 +71,7 @@ export function defaultData(): AppData {
     metrics: [],
     notes: [],
     fixedGoals: [],
+    dailyCheckIns: [],
     settings: {
       name: "",
       xHandle: "",
@@ -138,6 +140,7 @@ interface StoreState {
   updateFixedGoal: (id: string, patch: Partial<FixedGoal>) => void;
   deleteFixedGoal: (id: string) => void;
   setGoalCompletion: (id: string, date: string, count: number) => void;
+  upsertDailyCheckIn: (entry: DailyCheckIn) => void;
 }
 
 export const useStore = create<StoreState>((set, get) => ({
@@ -341,7 +344,19 @@ export const useStore = create<StoreState>((set, get) => ({
           ? { ...goal, completions: { ...goal.completions, [date]: Math.max(0, Math.round(count)) } }
           : goal)
       }
-    }))
+    })),
+  upsertDailyCheckIn: (entry) =>
+    set((s) => {
+      const exists = s.data.dailyCheckIns.some((item) => item.date === entry.date);
+      return {
+        data: {
+          ...s.data,
+          dailyCheckIns: exists
+            ? s.data.dailyCheckIns.map((item) => item.date === entry.date ? entry : item)
+            : [...s.data.dailyCheckIns, entry]
+        }
+      };
+    })
 }));
 
 export function initStore() {
