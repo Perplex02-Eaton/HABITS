@@ -311,3 +311,25 @@ export const IconSparklesAI = (p: IconProps) => (
     <path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16z" />
   </Svg>
 );
+
+export const IconUpload = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M12 16V4" />
+    <path d="M7 9l5-5 5 5" />
+    <path d="M4 20h16" />
+  </Svg>
+);
+
+export const IconChat = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 116-13 8 8 0 019 8z" />
+  </Svg>
+);
+
+export const IconDoc = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+    <path d="M14 2v6h6" />
+    <path d="M8 13h8M8 17h8" />
+  </Svg>
+);

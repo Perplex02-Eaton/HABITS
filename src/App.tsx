@@ -17,6 +17,7 @@ const Performance = lazy(() => import("./pages/Performance"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Calendar = lazy(() => import("./pages/Calendar"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const Study = lazy(() => import("./pages/Study"));
 
 export default function App() {
   const location = useLocation();
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/ajustes" element={<Settings />} />
           <Route path="/agenda" element={<Calendar />} />
           <Route path="/planes" element={<Pricing />} />
+          <Route path="/estudio" element={<Study />} />
           <Route path="*" element={<Dashboard />} />
         </Routes>
       </Suspense>

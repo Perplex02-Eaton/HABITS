@@ -683,6 +683,14 @@ export default function Jarvis() {
       window.setTimeout(() => navigate("/agenda"), 200);
       return "Abriendo tu agenda semanal.";
     }
+    if (/\b(abre|abrir|ve a|muestra|muéstrame|entra en)\b.*(estudio|estudiar|modo estudio|asistente de estudio|tutor)/i.test(low)) {
+      window.setTimeout(() => navigate("/estudio"), 200);
+      return "Abriendo tu asistente de estudio. Sube un PDF y te ayudo a entenderlo.";
+    }
+    if (/(qué me falta|que me falta|recomendaciones|recomienda|qué debo estudiar|que debo estudiar|analiza mis notas|repasar|qué reforzar)/i.test(low)) {
+      window.setTimeout(() => navigate("/estudio"), 200);
+      return "Voy a analizar tus notas y cursos. Toca «Analizar mi progreso» en la pestaña Consejos.";
+    }
     if (/\b(ve(?:r|amos|ríamos)?|abre|abrir|muestra|muéstrame|mis)\b.*(tarea|pendiente|lista)/i.test(low)) {
       window.setTimeout(() => {
         navigate("/tareas");

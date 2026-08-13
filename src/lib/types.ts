@@ -135,6 +135,7 @@ export interface Note {
   id: string;
   title: string;
   content: string;
+  courseId?: string;
   images: string[];
   drawingId: string | null;
   checklist: NoteChecklistItem[];
