@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import {
   IconHome,
   IconCalendar,
-  IconTasks,
+  IconBook,
   IconPen,
   IconSettings
 } from "./ui/Icons";
@@ -10,7 +10,7 @@ import {
 const TABS = [
   { to: "/", label: "Hoy", Icon: IconHome, end: true },
   { to: "/agenda", label: "Agenda", Icon: IconCalendar },
-  { to: "/tareas", label: "Plan", Icon: IconTasks },
+  { to: "/cursos", label: "Cursos", Icon: IconBook },
   { to: "/notas", label: "Notas", Icon: IconPen },
   { to: "/ajustes", label: "Ajustes", Icon: IconSettings }
 ];
