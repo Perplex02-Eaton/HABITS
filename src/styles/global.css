@@ -52,6 +52,23 @@ html[data-theme="dark"] {
   --shadow-float: 0 6px 28px rgba(0, 0, 0, 0.6);
 }
 
+/* ── Task checkbox ── */
+.checkbox {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--separator);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.checkbox:hover { border-color: var(--accent); }
+
 /* ── Theme picker ── */
 .theme-grid {
   display: grid;

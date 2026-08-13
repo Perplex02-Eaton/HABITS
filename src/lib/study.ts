@@ -130,7 +130,28 @@ Responde en español, breve y accionable, con este formato:
   return chat(sys, user, cfg);
 }
 
-// ── Generación de documentos ────────────────────────────────
+// ── Explicar una tarea (guía del profesor) ──────────────────
+/**
+ * El profesor explica CÓMO hacer una tarea: qué es, por qué importa,
+ * y un plan paso a paso. Usa el sílabo como contexto si está disponible.
+ */
+export async function explainTask(
+  taskTitle: string,
+  taskDesc: string,
+  courseName: string,
+  syllabus: string,
+  cfg: AiConfig
+): Promise<string> {
+  const sys = `Eres un profesor experto de "${courseName}". Ayudas al estudiante a COMPLETAR una tarea. Sé claro, práctico y motivador. Responde en español.`;
+  const user = `TAREA: ${taskTitle}
+${taskDesc ? `DESCRIPCIÓN: ${taskDesc}\n` : ""}${syllabus ? `CONTEXTO DEL SÍLABO (relevante):\n${syllabus.slice(0, 6000)}\n` : ""}
+Explícame en un plan accionable:
+1. 🎯 QUÉ se pide exactamente (en una frase).
+2. 📚 QUÉ necesito saber/repasar (conceptos clave).
+3. ✅ PASOS concretos para completarla (4-6 pasos numerados).
+4. 💡 Consejo del profesor para sacar buena nota.`;
+  return chat(sys, user, cfg);
+}
 export async function generatePdf(title: string, content: string): Promise<void> {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF();

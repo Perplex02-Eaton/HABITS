@@ -3,3 +3,12 @@ dist
 .env
 *.local
 .DS_Store
+scripts/_brief_tmp.txt
+scripts/save_brief.py
+scripts/set_free_ai.py
+scripts/backup_habits.py
+scripts/extract_syllabi.py
+scripts/save_syllabi.py
+scripts/utp_sync.py
+.vscode
+.idea
