@@ -10,6 +10,14 @@ export interface ScheduleItem {
   online?: boolean;
 }
 
+export interface CourseMaterial {
+  id: string;
+  name: string;
+  text: string;
+  kind: "pdf" | "text";
+  createdAt: number;
+}
+
 export interface Course {
   id: string;
   name: string;
@@ -17,6 +25,9 @@ export interface Course {
   professor?: string;
   color: string;
   schedule: ScheduleItem[];
+  syllabus?: string;
+  syllabusName?: string;
+  materials?: CourseMaterial[];
   createdAt: number;
 }
 

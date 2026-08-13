@@ -88,6 +88,48 @@ export async function studyRecommendations(
   return chat(sys, user, cfg);
 }
 
+// ── Profesor de curso (respeta la semana actual) ─────────────
+export interface ProfessorTask {
+  title: string;
+  due: string;
+  course: string;
+}
+
+/**
+ * Breve del profesor: qué estudiar y qué tarea hacer ESTA semana,
+ * sin adelantarse a los temas futuros del sílabo.
+ */
+export async function professorBrief(
+  courseName: string,
+  syllabus: string,
+  tasks: ProfessorTask[],
+  courseStartDate: string,
+  currentDate: Date,
+  cfg: AiConfig
+): Promise<string> {
+  const start = new Date(courseStartDate + "T00:00:00");
+  const diffDays = Math.floor((currentDate.getTime() - start.getTime()) / 86400000);
+  const week = Math.max(1, Math.floor(diffDays / 7) + 1);
+
+  const courseTasks = tasks.filter((t) => t.course.toLowerCase().includes(courseName.split(" ")[0].toLowerCase()) || t.course === courseName);
+
+  const sys = `Eres el PROFESOR de la asignatura "${courseName}". Actúas como un docente cercano y claro. Basándote SOLO en el sílabo y las tareas proporcionadas, le dices al estudiante EXACTAMENTE qué debe hacer esta semana. REGLA DE ORO: no te adelantes a temas de semanas futuras; enfócate solo en la semana actual (semana ${week}) y lo que vence pronto.`;
+  const user = `HOY es ${currentDate.toLocaleDateString("es-PE", { weekday: "long", day: "numeric", month: "long" })}. Estamos en la SEMANA ${week} del ciclo (empezó el ${courseStartDate}).
+
+SÍLABO DEL CURSO:
+${syllabus.slice(0, 20000) || "(aún no cargado — usa solo las tareas)"}
+
+TAREAS DEL CURSO:
+${courseTasks.length ? courseTasks.map((t) => `- ${t.title} → entrega ${t.due}`).join("\n") : "(sin tareas registradas)"}
+
+Responde en español, breve y accionable, con este formato:
+1. 📚 TEMA de esta semana (según el sílabo, semana ${week}).
+2. ✅ QUÉ DEBO HACER (la tarea concreta y cómo abordarla).
+3. ⏰ QUÉ VENCE y cuándo.
+4. 💡 Consejo corto del profesor.`;
+  return chat(sys, user, cfg);
+}
+
 // ── Generación de documentos ────────────────────────────────
 export async function generatePdf(title: string, content: string): Promise<void> {
   const { jsPDF } = await import("jspdf");

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useStore } from "../stores/useStore";
 import type { Course, ScheduleItem, Day } from "../lib/types";
 import { DAY_SHORT } from "../lib/dates";
@@ -14,7 +15,8 @@ import {
   IconChevron,
   IconPencil,
   IconClock,
-  IconCheck
+  IconCheck,
+  IconBook
 } from "../components/ui/Icons";
 
 export const COURSE_COLORS = [
@@ -55,6 +57,7 @@ export default function Courses() {
   const addCourse = useStore((s) => s.addCourse);
   const updateCourse = useStore((s) => s.updateCourse);
   const deleteCourse = useStore((s) => s.deleteCourse);
+  const navigate = useNavigate();
 
   const [draft, setDraft] = useState<DraftCourse | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -221,6 +224,14 @@ export default function Courses() {
                     {c.professor ? ` · ${c.professor}` : ""}
                   </div>
                 </div>
+                <button
+                  className="btn-icon"
+                  style={{ color: c.color }}
+                  title="Abrir cuaderno"
+                  onClick={(e) => { e.stopPropagation(); navigate(`/cuaderno/${c.id}`); }}
+                >
+                  <IconBook size={18} />
+                </button>
                 <IconChevron size={16} style={{ color: "var(--label-tertiary)" }} />
               </div>
             ))}
