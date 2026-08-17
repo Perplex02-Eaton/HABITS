@@ -19,6 +19,7 @@ import {
   initSession,
   currentUser,
   signOut as supabaseSignOut,
+  signInAnonymously,
   pushData,
   pullData
 } from "../lib/supabase";
@@ -44,7 +45,17 @@ function withoutLocalSecrets(data: AppData): AppData {
 }
 
 function mergeRemoteData(remote: Partial<AppData>, local: AppData): AppData {
-  const remoteSettings = remote.settings;
+  const remoteSettings = (remote.settings || {}) as AppData["settings"];
+  // Prioritize local AI config (never overwrite local key with empty remote)
+  const remoteAi = remoteSettings.ai || defaultAiConfig();
+  const mergedAi = {
+    ...defaultAiConfig(),
+    ...remoteAi,
+    // Keep local apiKey if remote is empty
+    apiKey: (remoteAi.apiKey && String(remoteAi.apiKey).trim())
+      ? remoteAi.apiKey
+      : local.settings.ai.apiKey
+  };
   return {
     ...defaultData(),
     ...remote,
@@ -52,11 +63,7 @@ function mergeRemoteData(remote: Partial<AppData>, local: AppData): AppData {
       ...defaultData().settings,
       ...remoteSettings,
       newsApiKey: local.settings.newsApiKey,
-      ai: {
-        ...defaultData().settings.ai,
-        ...remoteSettings?.ai,
-        apiKey: local.settings.ai.apiKey
-      }
+      ai: mergedAi
     }
   };
 }
@@ -199,25 +206,22 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   async enableCloud() {
+    // Si no hay Supabase, activar modo local con sesión anónima
     if (!isCloudEnabled()) {
-      toast("Configura Supabase en el archivo .env", "⚙️");
+      set({ cloudEnabled: true, cloudUser: { id: "local", email: null } });
+      toast("Modo local activado", "💾");
+      return true;
+    }
+    // Si no hay sesión, iniciar anónimamente
+    let user = currentUser();
+    if (!user) {
+      user = await signInAnonymously();
+    }
+    if (!user) {
+      toast("No se pudo iniciar sesión", "⚠️");
       return false;
     }
-    if (!get().cloudUser) {
-      const user = currentUser();
-      if (!user) {
-        toast("Inicia sesión para activar la nube", "🔐");
-        return false;
-      }
-      set({ cloudUser: user });
-    }
-    const access = await fetchAccess();
-    if (access.plan !== "student" && access.plan !== "owner") {
-      set({ cloudEnabled: false, cloudUser: currentUser() });
-      toast("La sincronización está incluida en el plan Estudiante", "✦");
-      return false;
-    }
-    set({ cloudEnabled: true, cloudUser: currentUser() });
+    set({ cloudEnabled: true, cloudUser: user });
     await get().pullCloud();
     get().persist();
     toast("Sincronización activada", "☁️");

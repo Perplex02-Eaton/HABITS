@@ -17,20 +17,30 @@ export const GUEST_ACCESS: AppAccess = {
 };
 
 export async function fetchAccess(): Promise<AppAccess> {
-  if (!supabase) return GUEST_ACCESS;
-  const { data: session } = await supabase.auth.getSession();
-  if (!session.session) return GUEST_ACCESS;
-  const { data, error } = await supabase.rpc("get_my_access");
-  if (error || !Array.isArray(data) || !data[0]) {
-    return { ...GUEST_ACCESS, plan: "free" };
+  // Sin Supabase configurado → acceso gratuito completo (sin paywall)
+  if (!supabase) {
+    return { plan: "free", isOwner: false, subscriptionStatus: "none", periodEnd: null };
   }
-  const row = data[0] as Record<string, unknown>;
-  return {
-    plan: (row.plan as AccessPlan) || "free",
-    isOwner: Boolean(row.is_owner),
-    subscriptionStatus: String(row.subscription_status || "none"),
-    periodEnd: typeof row.period_end === "string" ? row.period_end : null
-  };
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) {
+      return { plan: "free", isOwner: false, subscriptionStatus: "none", periodEnd: null };
+    }
+    const { data, error } = await supabase.rpc("get_my_access");
+    if (error || !Array.isArray(data) || !data[0]) {
+      return { plan: "free", isOwner: false, subscriptionStatus: "none", periodEnd: null };
+    }
+    const row = data[0] as Record<string, unknown>;
+    return {
+      plan: (row.plan as AccessPlan) || "free",
+      isOwner: Boolean(row.is_owner),
+      subscriptionStatus: String(row.subscription_status || "none"),
+      periodEnd: typeof row.period_end === "string" ? row.period_end : null
+    };
+  } catch {
+    // Si falla la conexión, acceso gratuito
+    return { plan: "free", isOwner: false, subscriptionStatus: "none", periodEnd: null };
+  }
 }
 
 export async function createSubscription(cycle: "monthly" | "yearly"): Promise<string> {

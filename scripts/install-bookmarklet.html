@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instalar HABITS ⇄ UTP</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; background:#0a0a0f; color:#eee; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; padding:24px; text-align:center; }
+  h1 { font-size:1.6rem; margin-bottom:8px; }
+  .sub { color:#9a9aa5; margin-bottom:32px; max-width:560px; line-height:1.6; }
+  .btn { display:inline-block; background:#0a84ff; color:#fff; font-weight:600; padding:16px 32px; border-radius:14px; text-decoration:none; font-size:1.1rem; margin:8px; box-shadow:0 6px 20px rgba(10,132,255,.4); }
+  .btn:active { transform:scale(.97); }
+  .card { background:#16161d; border:1px solid #26262f; border-radius:16px; padding:20px; margin:16px 0; max-width:560px; text-align:left; line-height:1.7; }
+  ol { padding-left:20px; }
+  li { margin:8px 0; }
+  code { background:#222; padding:2px 8px; border-radius:6px; font-size:.9em; }
+</style>
+</head>
+<body>
+  <h1>🔄 HABITS ⇄ UTP+class</h1>
+  <p class="sub">Sincroniza tus tareas universitarias con tu app HABITS con un solo clic. Arrastra el botón a tu barra de favoritos.</p>
+
+  <a class="btn" id="bm" href="javascript:(function(){void 0})()">🔗 Sincronizar con HABITS</a>
+  <p style="color:#9a9aa5; font-size:.85rem;">Arrastra el botón azul ↑ a tu barra de marcadores</p>
+
+  <div class="card">
+    <h3>📋 Cómo usarlo</h3>
+    <ol>
+      <li>Arrastra el botón <b>«Sincronizar con HABITS»</b> a tu barra de favoritos (Ctrl+Shift+B para mostrarla en Chrome).</li>
+      <li>Entra a <code>class.utp.edu.pe</code> y <b>haz login</b>.</li>
+      <li>Haz clic en el favorito <b>«Sincronizar con HABITS»</b>.</li>
+      <li>✅ Listo. Tus tareas aparecen en HABITS (app y recordatorios de Hermes).</li>
+    </ol>
+    <p style="color:#9a9aa5; font-size:.85rem;">Hazlo cada vez que el profe suba nuevas entregas (toma 1 segundo).</p>
+  </div>
+
+  <div class="card">
+    <h3>🔧 ¿El botón no se instaló con el script?</h3>
+    <p style="color:#9a9aa5; font-size:.85rem;">Descarga el script desde <code>C:\EATON\HABITS\scripts\utp-sync-bookmarklet.min.js</code>, copia TODO su contenido y pégalo en la URL de un marcador nuevo.</p>
+  </div>
+
+  <script>
+    // Cargar el bookmarklet real
+    fetch("__BOOKMARKLET__").then(r=>r.text()).then(code => {
+      document.getElementById("bm").href = "javascript:" + code.replace(/^javascript:/,'');
+    }).catch(()=>{});
+  </script>
+</body>
+</html>
