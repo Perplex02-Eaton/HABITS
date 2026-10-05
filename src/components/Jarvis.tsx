@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../stores/useStore";
 import { toast } from "../stores/useToasts";
@@ -86,6 +86,12 @@ function getRecognition(): SpeechRecognition | null {
 }
 
 const ORB_SIZE = 120;
+
+type ChatMessage = {
+  id: number;
+  role: "user" | "assistant";
+  text: string;
+};
 
 const NODES: [number, number][] = [
   [60, 60],
@@ -524,11 +530,18 @@ export default function Jarvis() {
   const [supported, setSupported] = useState(true);
   const [partial, setPartial] = useState("");
   const [reply, setReply] = useState<string | null>(null);
+  const [textInput, setTextInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [externalAction, setExternalAction] = useState<{ url: string; label: string } | null>(null);
   const recRef = useRef<SpeechRecognition | null>(null);
   const finalRef = useRef("");
+  const chatLogRef = useRef<HTMLDivElement>(null);
   const speakId = useRef(0);
   const navigate = useNavigate();
+
+  const addMessage = (role: ChatMessage["role"], text: string) => {
+    setMessages((current) => [...current.slice(-11), { id: Date.now() + Math.random(), role, text }]);
+  };
 
   useEffect(() => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
@@ -543,6 +556,11 @@ export default function Jarvis() {
       cancelSpanishAudio();
     };
   }, []);
+
+  useEffect(() => {
+    const log = chatLogRef.current;
+    if (log) log.scrollTop = log.scrollHeight;
+  }, [messages, partial, thinking]);
 
   const speak = async (text: string) => {
     if (typeof window === "undefined") return;
@@ -642,7 +660,7 @@ export default function Jarvis() {
       return `${greeting}, jefe. Estoy en línea y a sus órdenes. ¿Qué necesita?`;
     }
 
-    if (/qué tengo|que tengo|resumen|como voy|cómo voy|qué hay hoy|que hay hoy|mis pendientes|estado del día/i.test(low)) {
+    if (/qué tengo|que tengo|resumen|como voy|cómo voy|qué hay hoy|que hay hoy|mis pendientes|estado del día/i.test(low) && !/(clase|curso)/i.test(low)) {
       const pending = s.data.tasks.filter((t) => t.status === "pending" && t.dueDate <= today);
       const todayPending = pending.filter((t) => t.dueDate === today);
       const plan = s.data.mealPlans.find((p) => p.date === today);
@@ -659,6 +677,36 @@ export default function Jarvis() {
       if (routines.length) parts.push(`${routineDone} de ${routines.length} rutinas completadas`);
       if (checkIn) parts.push(`energía ${checkIn.energy} de 5 y ${checkIn.sleepHours} horas de sueño`);
       return parts.length ? parts.join(". ") + "." : "Todo en orden. No hay pendientes por hoy.";
+    }
+
+    if (/(qué|que|cuál|cual).*(clase|curso).*(hoy|día|dia)|tema.*(clase|curso).*(hoy|día|dia)|qué.*tengo.*clase/i.test(low)) {
+      const todayClasses = s.data.courses
+        .flatMap((course) => course.schedule
+          .filter((slot) => slot.day === now.getDay())
+          .map((slot) => ({
+            course: course.name,
+            slot,
+            materials: (course.materials ?? []).length,
+            materialNames: (course.materials ?? []).slice(0, 2).map((material) => material.name),
+            syllabus: Boolean(course.syllabus || course.syllabusName)
+          })))
+        .sort((a, b) => a.slot.start.localeCompare(b.slot.start));
+      if (!todayClasses.length) return "No tienes clases registradas para hoy. Puedes añadirlas en Cursos y te las mostraré aquí.";
+      const summary = todayClasses.map(({ course, slot }) => `${course} a las ${slot.start}${slot.room ? `, aula ${slot.room}` : ""}`).join("; ");
+      const materialNames = [...new Set(todayClasses.flatMap((item) => item.materialNames))];
+      const studyHint = todayClasses.some((item) => item.materials || item.syllabus)
+        ? ` Tengo material asociado${materialNames.length ? ` (${materialNames.join(", ")})` : ""}; pídeme que te prepare un repaso.`
+        : " Si me compartes el sílabo o tus apuntes, te digo el tema exacto y te preparo preguntas.";
+      return `Hoy tienes ${summary}.${studyHint}`;
+    }
+
+    if (/(qué|que|cuál|cual).*(tarea|pendiente).*(vence|venc|primero|próxima|proxima)|próxima tarea|proxima tarea/i.test(low)) {
+      const nextTask = s.data.tasks
+        .filter((task) => task.status === "pending")
+        .sort((a, b) => `${a.dueDate}${a.dueTime ?? "23:59"}`.localeCompare(`${b.dueDate}${b.dueTime ?? "23:59"}`))[0];
+      return nextTask
+        ? `La próxima tarea es «${nextTask.title}», para el ${nextTask.dueDate}${nextTask.dueTime ? ` a las ${nextTask.dueTime}` : ""}.`
+        : "No tienes tareas pendientes. Puedes dictarme una nueva cuando quieras.";
     }
 
     if (/\b(ve(?:r|amos|ríamos)?|abre|abrir|muestra|muéstrame|pon)\b.*(rendimiento|gráfica|grafica)/i.test(low)) {
@@ -802,6 +850,9 @@ export default function Jarvis() {
   };
 
   const handleCommand = async (text: string) => {
+    const cleanText = text.trim();
+    if (!cleanText) return;
+    addMessage("user", cleanText);
     let r = dispatch(text);
     const handledLocally = Boolean(r);
     if (!r && aiConfigured(useStore.getState().data.settings.ai)) {
@@ -820,7 +871,16 @@ export default function Jarvis() {
       r = `Entendido, jefe. ${r}`;
     }
     setReply(r);
+    addMessage("assistant", r);
     speak(r);
+  };
+
+  const submitText = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const value = textInput.trim();
+    if (!value || thinking) return;
+    setTextInput("");
+    void handleCommand(value);
   };
 
   const toggle = () => {
@@ -937,15 +997,50 @@ export default function Jarvis() {
         <span>{listening ? "Detener" : "Hablar con Jarvis"}</span>
       </button>
 
-      <div className="jarvis-conversation">
-        {partial && <div className="jarvis-transcript">“{partial}”</div>}
+      <div className="jarvis-conversation" aria-label="Conversación con Jarvis">
+        <div className="jarvis-chat-head">
+          <span className="jarvis-chat-label">CONVERSACIÓN</span>
+          <span className="jarvis-chat-hint">Puedes escribir o hablar</span>
+        </div>
+        <div ref={chatLogRef} className="jarvis-chat-log" aria-live="polite">
+          {!messages.length && !partial && (
+            <div className="jarvis-chat-empty">
+              <span className="jarvis-chat-empty-icon">✦</span>
+              <span>Pregúntame por tus clases, tareas, horarios o apuntes.</span>
+            </div>
+          )}
+          {messages.map((message) => (
+            <div key={message.id} className={`jarvis-chat-message ${message.role}`}>
+              <span className="jarvis-chat-avatar">{message.role === "user" ? "TÚ" : "J"}</span>
+              <div className="jarvis-chat-bubble">
+                <span className="jarvis-chat-author">{message.role === "user" ? "Tú" : "Jarvis"}</span>
+                <span>{message.text}</span>
+              </div>
+            </div>
+          ))}
+          {partial && (
+            <div className="jarvis-chat-message user draft">
+              <span className="jarvis-chat-avatar">TÚ</span>
+              <div className="jarvis-chat-bubble"><span className="jarvis-chat-author">Tú</span><span>{partial}</span></div>
+            </div>
+          )}
+          {thinking && (
+            <div className="jarvis-chat-message assistant typing">
+              <span className="jarvis-chat-avatar">J</span>
+              <div className="jarvis-chat-bubble"><span className="jarvis-chat-author">Jarvis</span><span className="typing-dots">Pensando<span>·</span><span>·</span><span>·</span></span></div>
+            </div>
+          )}
+        </div>
 
-        {reply && (
-          <div className="jarvis-reply">
-            <span className="jarvis-reply-tag">JARVIS</span>
-            <span>{reply}</span>
-          </div>
-        )}
+        <form className="jarvis-chat-form" onSubmit={submitText}>
+          <input
+            value={textInput}
+            onChange={(event) => setTextInput(event.target.value)}
+            placeholder="Escribe: ¿qué clase tengo hoy?"
+            aria-label="Escribe un mensaje para Jarvis"
+          />
+          <button type="submit" aria-label="Enviar mensaje" disabled={!textInput.trim() || thinking}>↑</button>
+        </form>
 
         {externalAction && (
           <a
@@ -961,9 +1056,15 @@ export default function Jarvis() {
       </div>
 
       <div className="jarvis-hints" aria-label="Ejemplos de comandos">
-        <span>Busca música en YouTube</span>
-        <span>Dame noticias sobre tecnología</span>
-        <span>Abre Spotify</span>
+        {[
+          "¿Qué clase tengo hoy?",
+          "¿Qué tarea vence primero?",
+          "Ayúdame a estudiar"
+        ].map((hint) => (
+          <button key={hint} type="button" onClick={() => void handleCommand(hint)} disabled={thinking}>
+            {hint}
+          </button>
+        ))}
       </div>
     </section>
   );
