@@ -919,6 +919,12 @@ export default function Jarvis() {
         )}
       </div>
 
+      <div className="jarvis-capabilities" aria-label="Capacidades de Jarvis">
+        <span><i aria-hidden="true">⌁</i> Voz natural</span>
+        <span><i aria-hidden="true">◌</i> Agenda universitaria</span>
+        <span><i aria-hidden="true">✦</i> Apoyo con IA</span>
+      </div>
+
       <button
         className={`jarvis-mic ${listening ? "active" : ""}`}
         onClick={toggle}

@@ -6,6 +6,7 @@ import type { NewsItem } from "../lib/news";
 import MusicPanel from "../components/MusicPanel";
 import Jarvis from "../components/Jarvis";
 import DailyCommandCenter from "../components/DailyCommandCenter";
+import AcademicConnections from "../components/AcademicConnections";
 import {
   todayKey,
   formatLong,
@@ -150,6 +151,7 @@ export default function Dashboard() {
         <MusicPanel compact />
         <Jarvis />
         <DailyCommandCenter />
+        <AcademicConnections />
 
         {nextPersonalEvent && (
           <Link to="/agenda" className="card card-section reveal" style={{ textDecoration: "none" }}>

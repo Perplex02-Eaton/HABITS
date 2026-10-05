@@ -19,6 +19,7 @@ const Calendar = lazy(() => import("./pages/Calendar"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Study = lazy(() => import("./pages/Study"));
 const CourseNotebook = lazy(() => import("./pages/CourseNotebook"));
+const Connections = lazy(() => import("./pages/Connections"));
 
 export default function App() {
   const location = useLocation();
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="/ajustes" element={<Settings />} />
           <Route path="/agenda" element={<Calendar />} />
           <Route path="/planes" element={<Pricing />} />
+          <Route path="/conexiones" element={<Connections />} />
           <Route path="/estudio" element={<Study />} />
           <Route path="/cuaderno/:courseId" element={<CourseNotebook />} />
           <Route path="*" element={<Dashboard />} />
