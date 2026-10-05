@@ -5,7 +5,7 @@ import { toast } from "../stores/useToasts";
 import { uid } from "../lib/uid";
 import type { MealType, Priority } from "../lib/types";
 import { aiAssistant, aiConfigured } from "../lib/ai";
-import { cinematicSpanish } from "../lib/voice";
+import { cancelSpanishAudio, speakSpanishAudio, unlockSpanishAudio, warmUpSpanishVoice } from "../lib/voice";
 import JarvisSphere3D from "./JarvisSphere3D";
 
 const WEEKDAYS: Record<string, number> = {
@@ -527,7 +527,6 @@ export default function Jarvis() {
   const [externalAction, setExternalAction] = useState<{ url: string; label: string } | null>(null);
   const recRef = useRef<SpeechRecognition | null>(null);
   const finalRef = useRef("");
-  const voicesReady = useRef(false);
   const speakId = useRef(0);
   const navigate = useNavigate();
 
@@ -537,29 +536,30 @@ export default function Jarvis() {
     }
     if ("speechSynthesis" in window) {
       window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        voicesReady.current = true;
-      };
     }
     return () => {
       recRef.current?.abort();
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      cancelSpanishAudio();
     };
   }, []);
 
-  const speak = (text: string) => {
-    if (!("speechSynthesis" in window)) return;
+  const speak = async (text: string) => {
+    if (typeof window === "undefined") return;
     const id = ++speakId.current;
-    const u = cinematicSpanish(text);
-    if (!voicesReady.current) window.speechSynthesis.getVoices();
-    const done = () => {
-      if (speakId.current === id) setSpeaking(false);
-    };
-    u.onend = done;
-    u.onerror = done;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    cancelSpanishAudio();
     setSpeaking(true);
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
+    if (await speakSpanishAudio(text)) {
+      if (speakId.current === id) setSpeaking(false);
+      return;
+    }
+    // No volver silenciosamente a la voz antigua del sistema: si el modelo
+    // no pudo cargar, avisamos para que el usuario vea el problema real.
+    if (speakId.current === id) {
+      setSpeaking(false);
+      toast("No pude cargar la voz neural. Revisa tu conexión y prueba de nuevo.", "⚠️");
+    }
   };
 
   const openWeb = (url: string, label: string): string => {
@@ -829,6 +829,9 @@ export default function Jarvis() {
       return;
     }
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    cancelSpanishAudio();
+    unlockSpanishAudio();
+    void warmUpSpanishVoice();
     setSpeaking(false);
     const rec = getRecognition();
     if (!rec) {

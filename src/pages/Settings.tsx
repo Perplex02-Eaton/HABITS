@@ -3,7 +3,7 @@ import { useStore } from "../stores/useStore";
 import { isCloudEnabled, signIn, signInWithGoogle, signUp } from "../lib/supabase";
 import { requestPermission } from "../lib/notify";
 import { aiConfigured, aiImprove } from "../lib/ai";
-import { ASSISTANT_VOICE_KEY, cinematicSpanish, preferredSpanishVoice, spanishVoices } from "../lib/voice";
+import { speakSpanishAudio, unlockSpanishAudio, warmUpSpanishVoice } from "../lib/voice";
 import { useAccess } from "../stores/useAccess";
 import { Link } from "react-router-dom";
 import { toast } from "../stores/useToasts";
@@ -31,25 +31,11 @@ export default function Settings() {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [installEvt, setInstallEvt] = useState<BeforeInstallPromptEvent | null>(null);
   const [testing, setTesting] = useState(false);
-  const [assistantVoices, setAssistantVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [assistantVoice, setAssistantVoice] = useState("");
 
   useEffect(() => {
     const onPrompt = (e: Event) => setInstallEvt(e as BeforeInstallPromptEvent);
     window.addEventListener("beforeinstallprompt", onPrompt);
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
-  }, []);
-
-  useEffect(() => {
-    if (!("speechSynthesis" in window)) return;
-    const load = () => {
-      const available = spanishVoices();
-      setAssistantVoices(available);
-      setAssistantVoice(localStorage.getItem(ASSISTANT_VOICE_KEY) || preferredSpanishVoice()?.name || "");
-    };
-    load();
-    window.speechSynthesis.addEventListener("voiceschanged", load);
-    return () => window.speechSynthesis.removeEventListener("voiceschanged", load);
   }, []);
 
   const install = async () => {
@@ -144,41 +130,22 @@ export default function Settings() {
           <div className="row-between">
             <div>
               <div className="list-title">Voz de JARVIS</div>
-              <div className="list-sub">Voz española gratuita instalada en este dispositivo</div>
+              <div className="list-sub">Voz neural española local · se descarga una vez y queda en caché</div>
             </div>
-          </div>
-          <div className="field-group mt-16">
-            <label className="field-label">Voz en español</label>
-            <select
-              className="field"
-              value={assistantVoice}
-              onChange={(event) => {
-                const name = event.target.value;
-                setAssistantVoice(name);
-                localStorage.setItem(ASSISTANT_VOICE_KEY, name);
-              }}
-            >
-              {assistantVoices.length === 0 && <option value="">Voz predeterminada en español</option>}
-              {assistantVoices.map((voice) => (
-                <option key={`${voice.name}-${voice.lang}`} value={voice.name}>
-                  {voice.name} · {voice.lang}
-                </option>
-              ))}
-            </select>
           </div>
           <button
             className="btn btn-secondary btn-block mt-16"
-            onClick={() => {
-              window.speechSynthesis.cancel();
-              window.speechSynthesis.speak(cinematicSpanish("Buenas tardes, jefe. Sistemas en línea. Estoy listo para ayudarle."));
+            onClick={async () => {
+              unlockSpanishAudio();
+              await warmUpSpanishVoice();
+              if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+              const phrase = "Buenas tardes, jefe. Sistemas en línea. Estoy listo para ayudarle.";
+              if (!(await speakSpanishAudio(phrase))) toast("No se pudo cargar la voz neural. Revisa tu conexión y prueba otra vez.", "⚠️");
             }}
-            disabled={!("speechSynthesis" in window)}
           >
-            Probar voz
+            Probar voz neural
           </button>
-          {assistantVoices.length === 0 && (
-            <p className="muted small mt-8">Este dispositivo no reporta voces españolas instaladas. Agrega una voz de Español en los ajustes de idioma del sistema.</p>
-          )}
+          <p className="muted small mt-8">Jarvis ya no utiliza la voz del sistema. La primera prueba descarga el modelo y las siguientes usan la copia local.</p>
         </div>
 
         <div className="card card-section">
