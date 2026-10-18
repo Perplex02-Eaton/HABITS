@@ -19,8 +19,6 @@ import {
   type VoiceOption
 } from "../lib/voice";
 import { useAccess } from "../stores/useAccess";
-import { LOCAL_OWNER_EMAIL, clearLocalOwner, readLocalOwner, setLocalOwner } from "../lib/billing";
-import { Link } from "react-router-dom";
 import { toast } from "../stores/useToasts";
 import Switch from "../components/ui/Switch";
 import Sheet from "../components/ui/Sheet";
@@ -38,7 +36,7 @@ export default function Settings() {
   const cloudUser = useStore((s) => s.cloudUser);
   const enableCloud = useStore((s) => s.enableCloud);
   const disableCloud = useStore((s) => s.disableCloud);
-  const { access, refresh: refreshAccess } = useAccess();
+  const { refresh: refreshAccess } = useAccess();
 
   const [authOpen, setAuthOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -50,24 +48,6 @@ export default function Settings() {
   const [rate, setRate] = useState(getSpeechRate());
   const [voiceList, setVoiceList] = useState<VoiceOption[]>([]);
   const [selectedVoice, setSelectedVoice] = useState("");
-  const localOwner = readLocalOwner();
-  const [ownerEmail, setOwnerEmail] = useState(localOwner?.email || LOCAL_OWNER_EMAIL);
-
-  const activateOwner = async () => {
-    const saved = setLocalOwner(ownerEmail);
-    if (!saved) {
-      toast("Escribe el correo del propietario", "⚠️");
-      return;
-    }
-    await refreshAccess();
-    toast(`Cuenta propietaria activada · ${saved.email}`, "👑");
-  };
-
-  const deactivateOwner = async () => {
-    clearLocalOwner();
-    await refreshAccess();
-    toast("Cuenta propietaria desactivada en este dispositivo", "🔓");
-  };
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) return;
@@ -467,9 +447,7 @@ export default function Settings() {
                     ? "Configura Supabase (ver .env)"
                     : cloudEnabled
                       ? `Activa · ${cloudUser?.email ?? "sesión anónima"}`
-                      : localOwner
-                        ? `Cuenta propietaria · ${localOwner.email}`
-                        : "Desactivada"}
+                      : "Desactivada"}
                 </div>
               </div>
             </div>
@@ -489,61 +467,18 @@ export default function Settings() {
           {cloudEnabled && cloudUser?.email && (
             <>
               <div className="account-plan-row mt-16">
-                <span>
-                  {access.isOwner
-                    ? "Propietario"
-                    : access.subscriptionStatus === "complimentary"
-                      ? "Cuenta invitada"
-                      : access.plan === "student"
-                        ? "Estudiante"
-                        : "Gratis"}
-                </span>
-                {(access.isOwner || access.subscriptionStatus === "complimentary") && <b>Acceso total</b>}
+                <span>Acceso total</span>
+                <b>Gratis</b>
               </div>
               <p className="muted small mt-8" style={{ lineHeight: 1.5 }}>
                 <IconCloud size={13} /> Tus datos se sincronizan automáticamente entre tu celular, tablet y laptop.
               </p>
             </>
           )}
-          {access.plan !== "owner" && access.plan !== "student" && (
-            <Link className="btn btn-primary btn-block mt-16" to="/planes">Ver planes</Link>
-          )}
-
-          <div className="mt-16" style={{ borderTop: "1px solid var(--border)", paddingTop: 12 }}>
-            {localOwner ? (
-              <>
-                <div className="list-title">👑 Cuenta propietaria · acceso total</div>
-                <div className="list-sub">
-                  {localOwner.email} · en este dispositivo
-                  {localOwner.since ? ` desde ${new Date(localOwner.since).toLocaleDateString("es-PE")}` : ""}
-                </div>
-                <button className="btn btn-secondary btn-sm mt-8" onClick={deactivateOwner}>
-                  Salir de la cuenta propietaria
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="list-title">Cuenta de administrador</div>
-                <div className="list-sub">
-                  Si eres el propietario de Habits, actívala aquí en este dispositivo. No necesita
-                  contraseña: desbloquea el acceso total de forma local.
-                </div>
-                <div className="field-group mt-8">
-                  <label className="field-label">Correo del propietario</label>
-                  <input
-                    type="email"
-                    className="field"
-                    placeholder="habits@correo.com"
-                    value={ownerEmail}
-                    onChange={(e) => setOwnerEmail(e.target.value)}
-                  />
-                </div>
-                <button className="btn btn-primary btn-sm mt-8" onClick={activateOwner}>
-                  Activar cuenta de administrador
-                </button>
-              </>
-            )}
-          </div>
+          <p className="muted small mt-16" style={{ lineHeight: 1.5 }}>
+            🆓 Habits es libre y gratuito: todas las funciones están desbloqueadas, sin planes, sin pagos y sin
+            cuentas de administrador.
+          </p>
         </div>
 
         {installEvt && (

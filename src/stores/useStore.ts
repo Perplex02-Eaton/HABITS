@@ -366,10 +366,11 @@ export const useStore = create<StoreState>((set, get) => ({
 export function initStore() {
   useStore.setState({ data: loadLocal(), hydrated: false, cloudUser: currentUser() });
   void initSession().then(async () => {
-    const access = await fetchAccess();
-    const premium = access.plan === "student" || access.plan === "owner";
-    useStore.setState({ cloudUser: currentUser(), cloudEnabled: premium });
-    if (premium) await useStore.getState().pullCloud();
+    // HABITS es gratis y de código abierto: el acceso es siempre total para todos.
+    await fetchAccess();
+    const user = currentUser();
+    useStore.setState({ cloudUser: user, cloudEnabled: Boolean(user) });
+    if (user) await useStore.getState().pullCloud();
     else useStore.setState({ hydrated: true });
   });
 }

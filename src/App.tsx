@@ -4,7 +4,6 @@ import TabBar from "./components/TabBar";
 import Toasts from "./components/Toasts";
 import ReminderWatcher from "./components/ReminderWatcher";
 import { useStore } from "./stores/useStore";
-import PremiumGate from "./components/PremiumGate";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Courses = lazy(() => import("./pages/Courses"));
@@ -59,11 +58,11 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/cursos" element={<Courses />} />
           <Route path="/comidas" element={<Meals />} />
-          <Route path="/ideas" element={<PremiumGate><Ideas /></PremiumGate>} />
+          <Route path="/ideas" element={<Ideas />} />
           <Route path="/tareas" element={<Tasks />} />
-          <Route path="/notas" element={<PremiumGate><Notas /></PremiumGate>} />
-          <Route path="/noticias" element={<PremiumGate><Noticias /></PremiumGate>} />
-          <Route path="/rendimiento" element={<PremiumGate><Performance /></PremiumGate>} />
+          <Route path="/notas" element={<Notas />} />
+          <Route path="/noticias" element={<Noticias />} />
+          <Route path="/rendimiento" element={<Performance />} />
           <Route path="/ajustes" element={<Settings />} />
           <Route path="/agenda" element={<Calendar />} />
           <Route path="/planes" element={<Pricing />} />
