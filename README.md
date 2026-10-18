@@ -4,6 +4,15 @@ App PWA que corre en tu **celular, tablet y laptop**. Controla tus cursos, tu
 alimentación, tus ideas para X e Instagram, tus tareas, tu rendimiento y la
 **frecuencia de Dios (244 Hz)** — todo con una interfaz limpia estilo Apple.
 
+## Libre y gratuito (código abierto)
+
+Habits es **gratis y de código abierto**: no hay planes, suscripciones, pagos ni
+muro de pago, y **todo el mundo tiene acceso a todas las funciones desde el
+primer segundo**. No hace falta crear una cuenta ni activar nada: tus datos se
+guardan en tu propio dispositivo. Se publica bajo la licencia **MIT** (ver
+`LICENSE`), así que puedes usarlo, copiarlo, modificarlo y compartirlo
+libremente.
+
 ## Funciones
 
 | Pantalla | Qué hace |
