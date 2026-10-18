@@ -12,3 +12,7 @@ scripts/save_syllabi.py
 scripts/utp_sync.py
 .vscode
 .idea
+
+# Python
+__pycache__/
+*.pyc

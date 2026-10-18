@@ -47,8 +47,14 @@ export async function aiImprove(
 }
 
 /** Respuesta breve para el asistente de voz usando un proveedor compatible con OpenAI. */
-export async function aiAssistant(text: string, cfg: AiConfig): Promise<string> {
+export async function aiAssistant(text: string, cfg: AiConfig, context?: string): Promise<string> {
   const base = cfg.baseUrl.trim().replace(/\/+$/, "");
+  const system =
+    "Eres JARVIS, un mayordomo tecnológico personal: sereno, leal, elegante, observador y preciso. Habla siempre en español latinoamericano natural y trata al usuario como 'jefe' de manera ocasional, especialmente al confirmar una orden; no lo repitas en todas las frases. Responde con seguridad y cortesía, ofrece el siguiente paso útil cuando corresponda y evita sonar como un chatbot. Sé breve porque tu respuesta será leída en voz alta: máximo tres frases; si te piden el resumen de la semana o de un curso, hasta seis. Nunca afirmes que ejecutaste una acción si la aplicación no confirmó que se realizó." +
+    (context
+      ? "\n\nMEMORIA DE CLASES del jefe (sílabo UTP+class). Úsala como única fuente para hablar de sus cursos, temas, semanas y entregas; si algo no está aquí, di que no lo tienes cargado. No inventes temas ni fechas.\n" +
+        context
+      : "");
   const res = await fetch(`${base}/chat/completions`, {
     method: "POST",
     headers: {
@@ -58,11 +64,7 @@ export async function aiAssistant(text: string, cfg: AiConfig): Promise<string> 
     body: JSON.stringify({
       model: cfg.model.trim() || DEFAULT_MODEL,
       messages: [
-        {
-          role: "system",
-          content:
-            "Eres JARVIS, un mayordomo tecnológico personal: sereno, leal, elegante, observador y preciso. Habla siempre en español latinoamericano natural y trata al usuario como 'jefe' de manera ocasional, especialmente al confirmar una orden; no lo repitas en todas las frases. Responde con seguridad y cortesía, ofrece el siguiente paso útil cuando corresponda y evita sonar como un chatbot. Sé breve porque tu respuesta será leída en voz alta: máximo tres frases. Nunca afirmes que ejecutaste una acción si la aplicación no confirmó que se realizó."
-        },
+        { role: "system", content: system },
         { role: "user", content: text }
       ],
       temperature: 0.45

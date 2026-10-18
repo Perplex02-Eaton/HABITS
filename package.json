@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "icons": "powershell -ExecutionPolicy Bypass -File scripts/generate-icons.ps1"
+    "icons": "powershell -ExecutionPolicy Bypass -File scripts/generate-icons.ps1",
+    "utp:courses": "python scripts/utp_courses.py",
+    "utp:status": "python scripts/utp_sync.py --status"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.3.0",

@@ -5,8 +5,223 @@ import { toast } from "../stores/useToasts";
 import { uid } from "../lib/uid";
 import type { MealType, Priority } from "../lib/types";
 import { aiAssistant, aiConfigured } from "../lib/ai";
+import {
+  courseWeekText,
+  deliverablesText,
+  findCourse,
+  memoryContextBlock,
+  resolveWeek,
+  type CourseMemory,
+  useCourseMemory,
+  weekOverview
+} from "../lib/courseMemory";
 import { cancelSpanishAudio, speakSpanishAudio, unlockSpanishAudio, warmUpSpanishVoice } from "../lib/voice";
+import {
+  AGENT_ACTIONS,
+  AGENT_OFFLINE_MSG,
+  AGENT_SENTINEL,
+  agentClipboard,
+  agentFocus,
+  agentLock,
+  agentMedia,
+  agentOpenApp,
+  agentOpenUrl,
+  agentScreenshot,
+  agentStatus,
+  agentType,
+  type MediaAction
+} from "../lib/desktop";
 import JarvisSphere3D from "./JarvisSphere3D";
+
+/** Tarea que `dispatch()` delega al agente local (la ejecuta `runAgentTask`). */
+type AgentTask =
+  | { kind: "open"; url: string; label: string; note?: string }
+  | { kind: "app"; name: string; label: string; fallback?: string }
+  | { kind: "media"; action: MediaAction; label: string }
+  | { kind: "screenshot" }
+  | { kind: "focus"; title: string }
+  | { kind: "type"; text: string }
+  | { kind: "clipboard"; text: string; label: string }
+  | { kind: "task"; title: string; course?: string }
+  | { kind: "lock"; delay: number };
+
+/** Empaqueta una orden para el agente local. */
+function agentTask(task: AgentTask): string {
+  return `${AGENT_SENTINEL}${JSON.stringify(task)}`;
+}
+
+function parseAgentTask(raw: string): AgentTask | null {
+  if (!raw.startsWith(AGENT_SENTINEL)) return null;
+  try {
+    return JSON.parse(raw.slice(AGENT_SENTINEL.length)) as AgentTask;
+  } catch {
+    return null;
+  }
+}
+
+/** Aula virtual UTP+class: destino de "abre mis tareas" y de la subida de tareas. */
+const CLASS_URL = "https://class.utp.edu.pe/";
+
+/** Apps de Windows que Jarvis abre por nombre; el cuarto valor es la versión web
+ *  que se usa cuando el agente local está apagado o no encuentra el programa. */
+const NATIVE_APPS: Array<[RegExp, string, string, string?]> = [
+  [/\b(vs ?code|visual studio code|c[oó]digo)\b/, "vscode", "VS Code", "https://vscode.dev/"],
+  [/\bspotify\b/, "spotify", "Spotify", "https://open.spotify.com/"],
+  [/\b(bloc de notas|notepad)\b/, "bloc de notas", "el Bloc de notas"],
+  [/\bcalculadora\b/, "calculadora", "la Calculadora"],
+  [/\bexcel\b/, "excel", "Excel"],
+  [/\bpower ?point\b/, "powerpoint", "PowerPoint"],
+  [/\bword\b/, "word", "Word"],
+  [/\bpaint\b/, "paint", "Paint"],
+  [/\b(explorador de archivos|explorador)\b/, "explorador de archivos", "el Explorador de archivos"],
+  [/\bdiscord\b/, "discord", "Discord"],
+  [/\bsteam\b/, "steam", "Steam"],
+  [/\b(administrador de tareas)\b/, "administrador de tareas", "el Administrador de tareas"],
+  [/\b(configuraci[oó]n(es)?( de windows)?|ajustes)\b/, "configuracion", "Configuración de Windows"]
+];
+
+/** Carpetas del equipo que Jarvis abre por nombre hablado. */
+const NATIVE_FOLDERS: Array<[RegExp, string, string]> = [
+  [/\b(habits|proyecto habits|jarvis)\b/, "habits", "la carpeta de HABITS"],
+  [/\b(nexo|publicaciones)\b/, "nexo", "la carpeta de NEXO"],
+  [/\bdescargas\b/, "descargas", "la carpeta de Descargas"],
+  [/\b(capturas|jarvis ?capturas)\b/, "capturas", "la carpeta de capturas"],
+  [/\bescritorio\b/, "escritorio", "el Escritorio"],
+  [/\bdocumentos\b/, "documentos", "la carpeta de Documentos"],
+  [/\b(m[uú]sica)\b(?=.*carpeta)/, "musica", "la carpeta de Música"],
+  [/\b(v[ií]deos?)\b(?=.*carpeta)/, "videos", "la carpeta de Videos"]
+];
+
+/** Decide si la frase es una orden para el agente local de la PC y la empaqueta.
+ *  Devuelve null cuando la frase es de la app (tareas, cursos, memoria de clases). */
+function dispatchAgent(low: string, raw: string, mem: CourseMemory | null): string | null {
+  const text = raw.trim();
+  const clean = (src: string, verbs: RegExp): string =>
+    scrubEdges(
+      src
+        .replace(verbs, " ")
+        .replace(/\b(por favor|please|ahora|ya)\b/gi, " ")
+        .replace(/\b(la|el|los|las|mi|mis)\s*$/i, " ")
+    );
+
+  // "¿qué puedes hacer?" -> lo que el agente sabe hacer de verdad, nada inventado.
+  if (/\b(qu[eé] puedes hacer|qu[eé] sabes hacer|tus acciones|qu[eé] controlas|acciones del agente)\b/.test(low)) {
+    return (
+      "En tu PC puedo: " +
+      AGENT_ACTIONS.map((item) => item.what).join("; ") +
+      ". Y dentro de la app: tareas, comidas, rutinas, cursos y tu memoria de clases UTP."
+    );
+  }
+
+  // --- Tareas del aula virtual (UTP+class) ---
+  const utpish = /(aula virtual|utp ?\+? ?class|utpclass|class\.utp|plataforma de la utp|mi plataforma|mis tareas de la utp)/.test(low);
+  if (utpish) {
+    if (/\b(sube|subir|sube la|prepara|prep[aá]rame|entrega|entregar|adjunta|adjuntar|manda|env[ií]a)\b/.test(low)) {
+      const course = mem ? findCourse(mem, low) : null;
+      const title = clean(
+        raw,
+        /\b(sube|subir|prepara|prep[aá]rame|entrega|entregar|adjunta|adjuntar|manda|env[ií]a|la|el|tarea|de|del|mi|al|a|en|utp|aula|virtual|plataforma|class)\b/gi
+      );
+      return agentTask({
+        kind: "task",
+        title: title || course?.course || "mi tarea",
+        course: course?.course
+      });
+    }
+    if (/\b(tareas?|entregas?|pendientes?|falta|subir)\b/.test(low) && /\b(qu[eé]|cu[aá]les|cu[aá]ntas|dime|lista|hay|tengo|mu[eé]strame)\b/.test(low)) {
+      if (!mem) return null;
+      return deliverablesText(mem, findCourse(mem, low));
+    }
+    if (/\b(abre|abrir|[aá]breme|entra|ve a|ll[eé]vame|pon|mu[eé]strame|quiero ver|d[oó]nde)\b/.test(low)) {
+      return agentTask({ kind: "open", url: CLASS_URL, label: "el aula virtual UTP" });
+    }
+  }
+
+  // --- "prepara/sube la tarea de X" sin decir "aula virtual": también es del aula ---
+  const subirTarea =
+    /\b(sube|subir|prepara|prep[aá]rame|entrega|entregar|adjunta|adjuntar|manda|env[ií]a)\b[^.]{0,24}\b(tarea|trabajo|pr[aá]ctica|informe|monograf[ií]a|proyecto|avance)\b/;
+  if (subirTarea.test(low)) {
+    const course = mem ? findCourse(mem, low) : null;
+    const title = clean(
+      raw,
+      /\b(sube|subir|prepara|prep[aá]rame|entrega|entregar|adjunta|adjuntar|manda|env[ií]a|la|el|los|las|tarea|trabajo|pr[aá]ctica|informe|monograf[ií]a|proyecto|avance|de|del|mi|mis|al|a|en|utp|aula|virtual|plataforma|class)\b/gi
+    );
+    return agentTask({
+      kind: "task",
+      title: title || course?.course || "mi tarea",
+      course: course?.course
+    });
+  }
+
+  // --- YouTube sin búsqueda: abrir el sitio en la PC ---
+  if (/\byoutube\b/.test(low) && !/\b(busca|b[uú]scame|quiero ver|reproduce|reproducir|pon el v[ií]deo)\b/.test(low)) {
+    if (/\b(abre|abrir|[aá]breme|abr[eé]me|lanza|ve a|entra a|ll[eé]vame)\b/.test(low)) {
+      return agentTask({ kind: "app", name: "youtube", label: "YouTube", fallback: "https://www.youtube.com/" });
+    }
+  }
+
+  // --- Multimedia (solo si la frase habla de música/reproductor) ---
+  const mediaish = /\b(m[uú]sica|canci[oó]n|tema|v[ií]deo|reproductor|volumen|sonido|audio|spotify|youtube|parlantes?)\b/.test(low);
+  const mediaRules: Array<[RegExp, MediaAction, string]> = [
+    [/\b(pausa|pausar|det[eé]n|detener|reanuda|resume|contin[uú]a)\b/, "play_pause", "Pauso o reanudo, según cómo estuviera."],
+    [/\b(siguiente|salta|pasa a la siguiente|pr[oó]xima canci[oó]n|pr[oó]ximo tema)\b/, "next", "Salto a la siguiente."],
+    [/\b(anterior|vuelve a la anterior|canci[oó]n previa)\b/, "prev", "Regreso a la anterior."],
+    [/\b(sube|s[uú]beme|m[aá]s) (el )?volumen\b/, "vol_up", "Subo el volumen."],
+    [/\b(baja|b[aá]jame|menos) (el )?volumen\b/, "vol_down", "Bajo el volumen."],
+    [/\b(silencia|silencio|mutea|quita el sonido|sin sonido)\b/, "mute", "Silencio total."],
+    [/\b(para la m[uú]sica|det[eé]n la m[uú]sica)\b/, "stop", "Detengo la reproducción."]
+  ];
+  for (const [pattern, action, label] of mediaRules) {
+    if (pattern.test(low) && (mediaish || /^\s*(pausa|pausar|siguiente|anterior|silencio|silencia|reanuda|resume)\s*$/.test(low))) {
+      return agentTask({ kind: "media", action, label });
+    }
+  }
+
+  // --- Captura de pantalla ---
+  if (/\b(captura|screenshot|pantallazo)\b/.test(low) && !/\b(carpeta|abre|abrir|mu[eé]strame|d[oó]nde|busca)\b/.test(low)) {
+    return agentTask({ kind: "screenshot" });
+  }
+
+  // --- Bloquear la PC (avisa antes: el retardo deja hablar a Jarvis) ---
+  if (/\b(bloquea|bloquear|lock)\b/.test(low) && /\b(pc|equipo|computadora|compu|laptop|sesi[oó]n|windows|pantalla)\b/.test(low)) {
+    return agentTask({ kind: "lock", delay: 9 });
+  }
+
+  // --- Traer una ventana al frente ---
+  if (/\b(trae|tr[aá]eme|enfoca|al frente|delante|adelante)\b/.test(low) && /\b(ventana|spotify|chrome|navegador|c[oó]digo|vscode|excel|word|whatsapp|explorador|carpeta)\b/.test(low)) {
+    const title = clean(
+      raw,
+      /\b(trae|tr[aá]eme|enfoca|pon|ponme|al|frente|delante|adelante|la|el|ventana|de|mi)\b/gi
+    );
+    if (title) return agentTask({ kind: "focus", title });
+  }
+
+  // --- Escribir en la ventana activa ---
+  const typed = /^\s*(?:escribe|teclea|digita)\b([\s\S]*)$/i.exec(text);
+  if (typed) {
+    let body = typed[1].replace(/^\s*(?:en la ventana(?: activa)?|aqu[ií]|esto|lo siguiente)\s*:?\s*/i, "");
+    body = scrubEdges(body.replace(/^[:,]\s*/, "")).replace(/^"(.*)"$/s, "$1").replace(/^'(.*)'$/s, "$1");
+    if (body) return agentTask({ kind: "type", text: body });
+  }
+
+  // --- Copiar algo al portapapeles (para pegarlo sin dictarlo) ---
+  const clip = /^\s*(?:copia|pon en el portapapeles)\b([\s\S]*)$/i.exec(text);
+  if (clip) {
+    let body = clip[1].replace(/^\s*(?:esto|lo siguiente|al portapapeles)\s*:?\s*/i, "");
+    body = scrubEdges(body.replace(/^[:,]\s*/, "")).replace(/^"(.*)"$/s, "$1").replace(/^'(.*)'$/s, "$1");
+    if (body) return agentTask({ kind: "clipboard", text: body, label: body.slice(0, 60) });
+  }
+
+  // --- Abrir carpetas o apps nativas ---
+  if (/\b(abre|abrir|[aá]breme|abr[eé]me|lanza|ejecuta|inicia|entra a|ve a|ll[eé]vame a)\b/.test(low)) {
+    const folder = NATIVE_FOLDERS.find(([pattern]) => pattern.test(low));
+    if (folder) return agentTask({ kind: "app", name: folder[1], label: folder[2] });
+    const app = NATIVE_APPS.find(([pattern]) => pattern.test(low));
+    if (app) return agentTask({ kind: "app", name: app[1], label: app[2], fallback: app[3] });
+  }
+
+  return null;
+}
 
 const WEEKDAYS: Record<string, number> = {
   domingo: 0,
@@ -538,6 +753,8 @@ export default function Jarvis() {
   const chatLogRef = useRef<HTMLDivElement>(null);
   const speakId = useRef(0);
   const navigate = useNavigate();
+  // Memoria de clases (public/utp-courses.json): unidades, semanas, temas y entregas.
+  const courseMemory = useCourseMemory();
 
   const addMessage = (role: ChatMessage["role"], text: string) => {
     setMessages((current) => [...current.slice(-11), { id: Date.now() + Math.random(), role, text }]);
@@ -591,6 +808,92 @@ export default function Jarvis() {
     return `Preparé ${label}. Toca el enlace para abrirlo.`;
   };
 
+  /** Ejecuta en la PC la orden que armó `dispatchAgent()` y devuelve la frase
+   *  que Jarvis dice. Si el agente local está apagado, cae al navegador. */
+  const runAgentTask = async (raw: string): Promise<string> => {
+    const task = parseAgentTask(raw);
+    if (!task) return AGENT_OFFLINE_MSG;
+
+    const info = await agentStatus();
+    if (!info?.ok) {
+      if (task.kind === "open") return openWeb(task.url, task.label);
+      if (task.kind === "app" && task.fallback) return openWeb(task.fallback, task.label);
+      return AGENT_OFFLINE_MSG;
+    }
+
+    if (task.kind === "open") {
+      const res = await agentOpenUrl(task.url);
+      if (res?.ok) return task.note ?? `Abriendo ${task.label}.`;
+      return openWeb(task.url, task.label);
+    }
+
+    if (task.kind === "app") {
+      const res = await agentOpenApp(task.name);
+      if (res?.ok) return `Abriendo ${task.label}.`;
+      if (task.fallback) return openWeb(task.fallback, task.label);
+      const words = task.name
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((word) => word.length >= 4);
+      const options = [...info.apps, ...info.folders];
+      const hits = options.filter((item) => words.some((word) => item.toLowerCase().includes(word))).slice(0, 3);
+      const hint = hits.length
+        ? ` ¿Quisiste decir ${hits.join(" o ")}?`
+        : " Dime el nombre exacto o pásame la dirección web.";
+      return `No encontré ${task.label} en tu equipo.${hint}`;
+    }
+
+    if (task.kind === "media") {
+      const res = await agentMedia(task.action);
+      return res?.ok ? task.label : "No pude controlar la reproducción. Dale play a algo y lo intento de nuevo.";
+    }
+
+    if (task.kind === "screenshot") {
+      const res = await agentScreenshot();
+      if (!res?.ok) return "No pude tomar la captura.";
+      return res.path ? `Captura guardada en ${res.path}.` : "Captura guardada en Imágenes\\JarvisCapturas.";
+    }
+
+    if (task.kind === "focus") {
+      const res = await agentFocus(task.title);
+      if (res?.ok) return `Traje ${task.title} al frente.`;
+      // No estaba abierto: si es una app conocida, la abrimos en vez de fallar.
+      const known = NATIVE_APPS.find(([pattern]) => pattern.test(task.title.toLowerCase()));
+      if (known) {
+        const opened = await agentOpenApp(known[1]);
+        if (opened?.ok) return `${task.title} no estaba abierto, así que lo abrí.`;
+        if (known[3]) return openWeb(known[3], known[2]);
+      }
+      return `No encontré una ventana con "${task.title}".`;
+    }
+
+    if (task.kind === "type") {
+      const res = await agentType(task.text);
+      return res?.ok
+        ? `Escribí ${task.text.length} caracteres en la ventana activa.`
+        : "No pude escribir: revisa que la ventana de destino esté activa.";
+    }
+
+    if (task.kind === "clipboard") {
+      const res = await agentClipboard(task.text);
+      return res?.ok ? "Copiado al portapapeles. Pégalo con Control V." : "No pude copiar al portapapeles.";
+    }
+
+    if (task.kind === "lock") {
+      const res = await agentLock(task.delay);
+      return res?.ok ? `Bloqueo tu sesión en ${task.delay} segundos.` : "No pude bloquear la PC.";
+    }
+
+    // kind === "task": dejar la tarea del aula lista para subir.
+    const course = courseMemory && task.course ? findCourse(courseMemory, task.course) : null;
+    await agentOpenUrl(CLASS_URL);
+    const pending = courseMemory && course ? deliverablesText(courseMemory, course) : "";
+    const first = pending.split(/\.\s+/).slice(0, 2).join(". ").slice(0, 240);
+    const where = course?.course ?? task.title;
+    const steps = `Abrí el aula virtual. Entra a ${where}, abre la tarea, adjunta tu archivo y dale Subir: ese último clic lo tienes que hacer tú.`;
+    return first ? `${steps} Pendientes en el sílabo: ${first}` : steps;
+  };
+
   const dispatch = (raw: string): string => {
     const low = raw.toLowerCase().replace(/\s+/g, " ");
     const s = useStore.getState();
@@ -608,6 +911,10 @@ export default function Jarvis() {
       if (/mañana|manana/.test(txt)) return dateKey(addDays(now, 1));
       return today;
     };
+
+    // Órdenes con "manos" en la PC: dispatch solo decide, el agente local ejecuta.
+    const agentOrder = dispatchAgent(low, raw, courseMemory);
+    if (agentOrder) return agentOrder;
 
     if (/youtube/i.test(low) && /\b(abre|abrir|busca|búscame|pon|reproduce|reproducir|quiero ver)\b/i.test(low)) {
       const query = scrubEdges(
@@ -658,6 +965,26 @@ export default function Jarvis() {
       const hour = new Date().getHours();
       const greeting = hour < 12 ? "Buenos días" : hour < 19 ? "Buenas tardes" : "Buenas noches";
       return `${greeting}, jefe. Estoy en línea y a sus órdenes. ¿Qué necesita?`;
+    }
+
+    // --- Memoria de clases (sílabo UTP): temas de la semana y entregas ---
+    if (courseMemory) {
+      const course = findCourse(courseMemory, low);
+      const imperative = /(agrega|a[nñ]ade|crea|recu[eé]rdame|reg[ií]stra|\bpon\b|guarda|borra|complet)/.test(low);
+      const weekish = /semana|semanal/.test(low);
+      const academic = /(curso|clase|materia|tema|utp|universi|examen|entrega|tarea|repaso|toca|veo|vemos|veremos|trata)/.test(low);
+      const notNavigation = !/^\s*(abre|abrir|ve a|ll[eé]vame|mu[eé]strame la pantalla)/.test(low);
+      if (weekish && (academic || !!course) && notNavigation && !imperative) {
+        const { week } = resolveWeek(courseMemory, low);
+        const detail = course ? courseWeekText(course, week) : "";
+        return detail || weekOverview(courseMemory, week);
+      }
+      const asksDeliverable = /(examen|entregable|entrega|evaluaci[oó]n|trabajo final|parcial)/.test(low)
+        && /(qu[eé]|cu[aá]ndo|cu[aá]l|mis|lista|dime|hay|fecha)/.test(low)
+        && !imperative;
+      if (asksDeliverable) {
+        return deliverablesText(courseMemory, course);
+      }
     }
 
     if (/qué tengo|que tengo|resumen|como voy|cómo voy|qué hay hoy|que hay hoy|mis pendientes|estado del día/i.test(low) && !/(clase|curso)/i.test(low)) {
@@ -854,12 +1181,23 @@ export default function Jarvis() {
     if (!cleanText) return;
     addMessage("user", cleanText);
     let r = dispatch(text);
-    const handledLocally = Boolean(r);
+    let handledLocally = Boolean(r);
+    // El intent marcó una acción de PC: la ejecuta el agente local (127.0.0.1:8877).
+    if (r.startsWith(AGENT_SENTINEL)) {
+      setThinking(true);
+      setReply("Ejecutando en tu PC…");
+      r = await runAgentTask(r);
+      handledLocally = true;
+    }
     if (!r && aiConfigured(useStore.getState().data.settings.ai)) {
       setThinking(true);
       setReply("Procesando tu consulta…");
       try {
-        r = await aiAssistant(text, useStore.getState().data.settings.ai);
+        r = await aiAssistant(
+          text,
+          useStore.getState().data.settings.ai,
+          courseMemory ? memoryContextBlock(courseMemory) : undefined
+        );
       } catch {
         r = "No pude conectar con la inteligencia artificial. Revisa la configuración de DeepSeek en Ajustes.";
       } finally {
@@ -867,7 +1205,7 @@ export default function Jarvis() {
       }
     }
     if (!r) r = "No entendí la instrucción. Puedes pedirme una tarea, una comida, un curso o tu resumen de hoy.";
-    if (handledLocally && /^(Abriendo|Registrado|Preparé|Tarea registrada|Curso |Idea registrada)/i.test(r)) {
+    if (handledLocally && /^(Abriendo|Abrí|Traje|Captura|Copiado|Bloqueo|Escribí|Registrado|Preparé|Tarea registrada|Curso |Idea registrada|Semana |Entregas)/i.test(r)) {
       r = `Entendido, jefe. ${r}`;
     }
     setReply(r);

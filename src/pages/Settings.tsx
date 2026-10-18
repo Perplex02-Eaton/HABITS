@@ -3,7 +3,21 @@ import { useStore } from "../stores/useStore";
 import { isCloudEnabled, signIn, signInWithGoogle, signUp } from "../lib/supabase";
 import { requestPermission } from "../lib/notify";
 import { aiConfigured, aiImprove } from "../lib/ai";
-import { speakSpanishAudio, unlockSpanishAudio, warmUpSpanishVoice } from "../lib/voice";
+import {
+  speakSpanishAudio,
+  unlockSpanishAudio,
+  warmUpSpanishVoice,
+  describeVoiceEngine,
+  getSpeechRate,
+  getVoiceEngine,
+  preferredSpanishVoice,
+  setAssistantVoice,
+  setSpeechRate,
+  setVoiceEngine,
+  spanishVoiceOptions,
+  type VoiceEngine,
+  type VoiceOption
+} from "../lib/voice";
 import { useAccess } from "../stores/useAccess";
 import { Link } from "react-router-dom";
 import { toast } from "../stores/useToasts";
@@ -31,6 +45,23 @@ export default function Settings() {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [installEvt, setInstallEvt] = useState<BeforeInstallPromptEvent | null>(null);
   const [testing, setTesting] = useState(false);
+  const [engine, setEngine] = useState<VoiceEngine>(getVoiceEngine());
+  const [rate, setRate] = useState(getSpeechRate());
+  const [voiceList, setVoiceList] = useState<VoiceOption[]>([]);
+  const [selectedVoice, setSelectedVoice] = useState("");
+
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+    const sync = () => {
+      window.speechSynthesis.getVoices();
+      const options = spanishVoiceOptions();
+      setVoiceList(options);
+      setSelectedVoice((prev) => prev || preferredSpanishVoice()?.name || options[0]?.name || "");
+    };
+    sync();
+    window.speechSynthesis.addEventListener("voiceschanged", sync);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", sync);
+  }, []);
 
   useEffect(() => {
     const onPrompt = (e: Event) => setInstallEvt(e as BeforeInstallPromptEvent);
@@ -130,22 +161,97 @@ export default function Settings() {
           <div className="row-between">
             <div>
               <div className="list-title">Voz de JARVIS</div>
-              <div className="list-sub">Voz neural española local · se descarga una vez y queda en caché</div>
+              <div className="list-sub">{describeVoiceEngine()}</div>
             </div>
           </div>
+
+          <div className="field-group mt-16">
+            <label className="field-label">Motor de voz</label>
+            <div className="chips">
+              {([
+                { id: "auto", label: "Automático" },
+                { id: "sistema", label: "Voz del sistema" },
+                { id: "neural", label: "Neural local (offline)" }
+              ] as { id: VoiceEngine; label: string }[]).map((option) => (
+                <button
+                  key={option.id}
+                  className={`chip ${engine === option.id ? "active" : ""}`}
+                  onClick={() => {
+                    setVoiceEngine(option.id);
+                    setEngine(option.id);
+                  }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {engine !== "neural" && voiceList.length > 0 && (
+            <div className="field-group mt-16">
+              <label className="field-label">Voz en español · {voiceList.length} disponible{voiceList.length === 1 ? "" : "s"}</label>
+              <select
+                className="field"
+                value={selectedVoice}
+                onChange={(e) => {
+                  setAssistantVoice(e.target.value);
+                  setSelectedVoice(e.target.value);
+                }}
+              >
+                {voiceList.map((voice) => (
+                  <option key={voice.name} value={voice.name}>
+                    {voice.label}
+                  </option>
+                ))}
+              </select>
+              {!voiceList.some((voice) => voice.neural) && (
+                <p className="muted small mt-8">
+                  No hay voces neuronales en este equipo. Abre la app en Edge, o instala el idioma español en Windows
+                  (Configuración → Hora e idioma → Voz y región).
+                </p>
+              )}
+            </div>
+          )}
+
+          {engine !== "neural" && voiceList.length === 0 && (
+            <p className="muted small mt-16">
+              Este equipo no tiene voces en español instaladas, así que se usará la voz neural local.
+            </p>
+          )}
+
+          {engine !== "neural" && (
+            <div className="field-group mt-16">
+              <label className="field-label">Velocidad · {rate.toFixed(2)}×</label>
+              <input
+                type="range"
+                min={0.7}
+                max={1.4}
+                step={0.05}
+                value={rate}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setRate(value);
+                  setSpeechRate(value);
+                }}
+              />
+            </div>
+          )}
+
           <button
             className="btn btn-secondary btn-block mt-16"
             onClick={async () => {
               unlockSpanishAudio();
-              await warmUpSpanishVoice();
-              if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+              void warmUpSpanishVoice();
               const phrase = "Buenas tardes, jefe. Sistemas en línea. Estoy listo para ayudarle.";
-              if (!(await speakSpanishAudio(phrase))) toast("No se pudo cargar la voz neural. Revisa tu conexión y prueba otra vez.", "⚠️");
+              if (!(await speakSpanishAudio(phrase, engine))) toast("No se pudo reproducir la voz. Prueba con otro motor.", "⚠️");
             }}
           >
-            Probar voz neural
+            Probar voz
           </button>
-          <p className="muted small mt-8">Jarvis ya no utiliza la voz del sistema. La primera prueba descarga el modelo y las siguientes usan la copia local.</p>
+          <p className="muted small mt-8">
+            La voz del sistema suena natural en Edge y Chrome y no descarga nada. La neural local funciona sin internet,
+            pero tarda en arrancar y suena más plana.
+          </p>
         </div>
 
         <div className="card card-section">

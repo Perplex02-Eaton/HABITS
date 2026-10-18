@@ -1,0 +1,4303 @@
+{
+  "generated_at": "2026-10-17T17:02:01",
+  "cycle_start": "2026-08-10",
+  "weeks_per_cycle": 18,
+  "current_week": 10,
+  "courses": {
+    "EXPORTACIONES": {
+      "course": "EXPORTACIONES",
+      "courseId": "6e3bbd4d-45e7-59e5-b00b-804daaa06080",
+      "sectionId": "b2fcc169-a07f-586f-9158-62bbd7bd36d8",
+      "sessions_per_week": 2,
+      "sessions_count": 35,
+      "weeks_count": 18,
+      "units": [
+        {
+          "no": 1,
+          "name": "El proceso de exportación y su documentación",
+          "weeks": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "no": 2,
+          "name": "Análisis e investigación de mercados destino",
+          "weeks": [
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "no": 3,
+          "name": "Costos de exportación",
+          "weeks": [
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        {
+          "no": 4,
+          "name": "Gestión integral del proceso de exportación",
+          "weeks": [
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ]
+        }
+      ],
+      "weeks": [
+        {
+          "week": 1,
+          "unit_no": 1,
+          "unit": "El proceso de exportación y su documentación",
+          "sessions": [
+            {
+              "n": 1,
+              "topic": "La exportación y su importancia en el comercio internacional",
+              "activities": [
+                {
+                  "text": "Presentación del curso",
+                  "kind": "presentacion"
+                }
+              ]
+            },
+            {
+              "n": 2,
+              "topic": "La mercancía y clasificación arancelaria",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "La exportación y su importancia en el comercio internacional",
+            "La mercancía y clasificación arancelaria"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso",
+              "kind": "presentacion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "La exportación y su importancia en el comercio internacional"
+        },
+        {
+          "week": 2,
+          "unit_no": 1,
+          "unit": "El proceso de exportación y su documentación",
+          "sessions": [
+            {
+              "n": 3,
+              "topic": "Tipos de Mercancías (Mercancías restringidas y Mercancías Prohibidas) y Entidades de control",
+              "activities": [
+                {
+                  "text": "Revisión de los materiales de la semana. Normativas peruanas aplicables a la exportación",
+                  "kind": "repaso"
+                }
+              ]
+            },
+            {
+              "n": 4,
+              "topic": "",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Tipos de Mercancías (Mercancías restringidas y Mercancías Prohibidas) y Entidades de control"
+          ],
+          "activities": [
+            {
+              "text": "Revisión de los materiales de la semana. Normativas peruanas aplicables a la exportación",
+              "kind": "repaso"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Tipos de Mercancías (Mercancías restringidas y Mercancías Prohibidas) y Entidades de control"
+        },
+        {
+          "week": 3,
+          "unit_no": 1,
+          "unit": "El proceso de exportación y su documentación",
+          "sessions": [
+            {
+              "n": 5,
+              "topic": "Requisitos legales y regulatorios para exportaciones en Perú",
+              "activities": []
+            },
+            {
+              "n": 6,
+              "topic": "Documentación básica en el proceso de exportación (factura comercial, lista de empaque, certificados)",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Requisitos legales y regulatorios para exportaciones en Perú",
+            "Documentación básica en el proceso de exportación (factura comercial, lista de empaque, certificados)"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Requisitos legales y regulatorios para exportaciones en Perú"
+        },
+        {
+          "week": 4,
+          "unit_no": 1,
+          "unit": "El proceso de exportación y su documentación",
+          "sessions": [
+            {
+              "n": 7,
+              "topic": "Taller: Identificación y análisis de documentos de exportación",
+              "activities": []
+            },
+            {
+              "n": 8,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 1",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Taller: Identificación y análisis de documentos de exportación"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "mode": "evaluacion",
+          "summary": "Taller: Identificación y análisis de documentos de exportación"
+        },
+        {
+          "week": 5,
+          "unit_no": 2,
+          "unit": "Análisis e investigación de mercados destino",
+          "sessions": [
+            {
+              "n": 9,
+              "topic": "Regímenes aduaneros aplicables a las exportaciones: exportación definitiva",
+              "activities": []
+            },
+            {
+              "n": 10,
+              "topic": "Regímenes aduaneros aplicables a las exportaciones: Exportación temporal para la reimportación en el mismo estado",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Regímenes aduaneros aplicables a las exportaciones: exportación definitiva",
+            "Regímenes aduaneros aplicables a las exportaciones: Exportación temporal para la reimportación en el mismo estado"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Regímenes aduaneros aplicables a las exportaciones: exportación definitiva"
+        },
+        {
+          "week": 6,
+          "unit_no": 2,
+          "unit": "Análisis e investigación de mercados destino",
+          "sessions": [
+            {
+              "n": 11,
+              "topic": "Incoterms bajo el rol del exportador",
+              "activities": []
+            },
+            {
+              "n": 12,
+              "topic": "Análisis e investigación de mercados destinos",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Incoterms bajo el rol del exportador",
+            "Análisis e investigación de mercados destinos"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Incoterms bajo el rol del exportador"
+        },
+        {
+          "week": 7,
+          "unit_no": 2,
+          "unit": "Análisis e investigación de mercados destino",
+          "sessions": [
+            {
+              "n": 13,
+              "topic": "Análisis de los potenciales clientes",
+              "activities": []
+            },
+            {
+              "n": 14,
+              "topic": "Adaptación del producto con potencial exportador para el mercado destino",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Análisis de los potenciales clientes",
+            "Adaptación del producto con potencial exportador para el mercado destino"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Análisis de los potenciales clientes"
+        },
+        {
+          "week": 8,
+          "unit_no": 2,
+          "unit": "Análisis e investigación de mercados destino",
+          "sessions": [
+            {
+              "n": 15,
+              "topic": "Taller: Análisis de mercados destinos y oportunidades para la exportación",
+              "activities": []
+            },
+            {
+              "n": 16,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 2",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Taller: Análisis de mercados destinos y oportunidades para la exportación"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "mode": "evaluacion",
+          "summary": "Taller: Análisis de mercados destinos y oportunidades para la exportación"
+        },
+        {
+          "week": 9,
+          "unit_no": 3,
+          "unit": "Costos de exportación",
+          "sessions": [
+            {
+              "n": 17,
+              "topic": "Conceptos básicos para cotizar. Costo y precio de exportación",
+              "activities": []
+            },
+            {
+              "n": 18,
+              "topic": "Costos directos y costos indirectos en exportación",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Conceptos básicos para cotizar. Costo y precio de exportación",
+            "Costos directos y costos indirectos en exportación"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Conceptos básicos para cotizar. Costo y precio de exportación"
+        },
+        {
+          "week": 10,
+          "unit_no": 3,
+          "unit": "Costos de exportación",
+          "sessions": [
+            {
+              "n": 19,
+              "topic": "Costos de envases y embalajes",
+              "activities": []
+            },
+            {
+              "n": 20,
+              "topic": "Costos logísticos de exportación",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Costos de envases y embalajes",
+            "Costos logísticos de exportación"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Costos de envases y embalajes"
+        },
+        {
+          "week": 11,
+          "unit_no": 3,
+          "unit": "Costos de exportación",
+          "sessions": [
+            {
+              "n": 21,
+              "topic": "Seguros en el proceso de exportación: transporte y mercancías",
+              "activities": []
+            },
+            {
+              "n": 22,
+              "topic": "Precio de exportación",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Seguros en el proceso de exportación: transporte y mercancías",
+            "Precio de exportación"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Seguros en el proceso de exportación: transporte y mercancías"
+        },
+        {
+          "week": 12,
+          "unit_no": 3,
+          "unit": "Costos de exportación",
+          "sessions": [
+            {
+              "n": 23,
+              "topic": "Taller: Análisis integral de costos en exportación",
+              "activities": []
+            },
+            {
+              "n": 24,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 3",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Taller: Análisis integral de costos en exportación"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "mode": "evaluacion",
+          "summary": "Taller: Análisis integral de costos en exportación"
+        },
+        {
+          "week": 13,
+          "unit_no": 4,
+          "unit": "Gestión integral del proceso de exportación",
+          "sessions": [
+            {
+              "n": 25,
+              "topic": "Documentación de exportación: ficha técnica, permisos y transferencias bancarias",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase. Revisión de los",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 26,
+              "topic": "Operadores logísticos y funciones. Modos de transporte para exportación",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Documentación de exportación: ficha técnica, permisos y transferencias bancarias",
+            "Operadores logísticos y funciones. Modos de transporte para exportación"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase. Revisión de los",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Documentación de exportación: ficha técnica, permisos y transferencias bancarias"
+        },
+        {
+          "week": 14,
+          "unit_no": 4,
+          "unit": "Gestión integral del proceso de exportación",
+          "sessions": [
+            {
+              "n": 27,
+              "topic": "Documentación y procesos logísticos en el transporte internacional",
+              "activities": []
+            },
+            {
+              "n": 28,
+              "topic": "Evaluación de términos de pago para clientes internacionales",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Documentación y procesos logísticos en el transporte internacional",
+            "Evaluación de términos de pago para clientes internacionales"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Documentación y procesos logísticos en el transporte internacional"
+        },
+        {
+          "week": 15,
+          "unit_no": 4,
+          "unit": "Gestión integral del proceso de exportación",
+          "sessions": [
+            {
+              "n": 29,
+              "topic": "Estrategias de financiamiento para exportación",
+              "activities": []
+            },
+            {
+              "n": 30,
+              "topic": "Estrategias para reducción de costos logísticos",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Estrategias de financiamiento para exportación",
+            "Estrategias para reducción de costos logísticos"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Estrategias de financiamiento para exportación"
+        },
+        {
+          "week": 16,
+          "unit_no": 4,
+          "unit": "Gestión integral del proceso de exportación",
+          "sessions": [
+            {
+              "n": 31,
+              "topic": "Análisis de riesgos en el comercio internacional y mitigación en exportaciones",
+              "activities": []
+            },
+            {
+              "n": 32,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 4",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Análisis de riesgos en el comercio internacional y mitigación en exportaciones"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "mode": "evaluacion",
+          "summary": "Análisis de riesgos en el comercio internacional y mitigación en exportaciones"
+        },
+        {
+          "week": 17,
+          "unit_no": 4,
+          "unit": "Gestión integral del proceso de exportación",
+          "sessions": [
+            {
+              "n": 33,
+              "topic": "Taller: Simulación del proceso integral de exportación",
+              "activities": []
+            },
+            {
+              "n": 34,
+              "topic": "Avance de Trabajo de Investigación",
+              "activities": [
+                {
+                  "text": "Revisión de los materiales de la semana. Evaluación",
+                  "kind": "repaso"
+                },
+                {
+                  "text": "PARTICIPACIÓN EN CLASE",
+                  "kind": "participacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Taller: Simulación del proceso integral de exportación",
+            "Avance de Trabajo de Investigación"
+          ],
+          "activities": [
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Taller: Simulación del proceso integral de exportación"
+        },
+        {
+          "week": 18,
+          "unit_no": 4,
+          "unit": "Gestión integral del proceso de exportación",
+          "sessions": [
+            {
+              "n": 35,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TRABAJO DE INVESTIGACIÓN"
+        }
+      ],
+      "sessions": [
+        {
+          "session": 1,
+          "week": 1,
+          "unit_no": 1,
+          "topic": "La exportación y su importancia en el comercio internacional",
+          "chunks": [
+            "Presentación del curso",
+            "Elección del delegado",
+            "Formación de grupos"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso",
+              "kind": "presentacion"
+            }
+          ]
+        },
+        {
+          "session": 2,
+          "week": 1,
+          "unit_no": 1,
+          "topic": "La mercancía y clasificación arancelaria",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 3,
+          "week": 2,
+          "unit_no": 1,
+          "topic": "Tipos de Mercancías (Mercancías restringidas y Mercancías Prohibidas) y Entidades de control",
+          "chunks": [
+            "Revisión de los materiales de la semana. Normativas peruanas aplicables a la exportación"
+          ],
+          "activities": [
+            {
+              "text": "Revisión de los materiales de la semana. Normativas peruanas aplicables a la exportación",
+              "kind": "repaso"
+            }
+          ]
+        },
+        {
+          "session": 4,
+          "week": 2,
+          "unit_no": 1,
+          "topic": "",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 5,
+          "week": 3,
+          "unit_no": 1,
+          "topic": "Requisitos legales y regulatorios para exportaciones en Perú",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 6,
+          "week": 3,
+          "unit_no": 1,
+          "topic": "Documentación básica en el proceso de exportación (factura comercial, lista de empaque, certificados)",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 7,
+          "week": 4,
+          "unit_no": 1,
+          "topic": "Taller: Identificación y análisis de documentos de exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 8,
+          "week": 4,
+          "unit_no": 1,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 9,
+          "week": 5,
+          "unit_no": 2,
+          "topic": "Regímenes aduaneros aplicables a las exportaciones: exportación definitiva",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 10,
+          "week": 5,
+          "unit_no": 2,
+          "topic": "Regímenes aduaneros aplicables a las exportaciones: Exportación temporal para la reimportación en el mismo estado",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 11,
+          "week": 6,
+          "unit_no": 2,
+          "topic": "Incoterms bajo el rol del exportador",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 12,
+          "week": 6,
+          "unit_no": 2,
+          "topic": "Análisis e investigación de mercados destinos",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 13,
+          "week": 7,
+          "unit_no": 2,
+          "topic": "Análisis de los potenciales clientes",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 14,
+          "week": 7,
+          "unit_no": 2,
+          "topic": "Adaptación del producto con potencial exportador para el mercado destino",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 15,
+          "week": 8,
+          "unit_no": 2,
+          "topic": "Taller: Análisis de mercados destinos y oportunidades para la exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 16,
+          "week": 8,
+          "unit_no": 2,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 17,
+          "week": 9,
+          "unit_no": 3,
+          "topic": "Conceptos básicos para cotizar. Costo y precio de exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 18,
+          "week": 9,
+          "unit_no": 3,
+          "topic": "Costos directos y costos indirectos en exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 19,
+          "week": 10,
+          "unit_no": 3,
+          "topic": "Costos de envases y embalajes",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 20,
+          "week": 10,
+          "unit_no": 3,
+          "topic": "Costos logísticos de exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 21,
+          "week": 11,
+          "unit_no": 3,
+          "topic": "Seguros en el proceso de exportación: transporte y mercancías",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 22,
+          "week": 11,
+          "unit_no": 3,
+          "topic": "Precio de exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 23,
+          "week": 12,
+          "unit_no": 3,
+          "topic": "Taller: Análisis integral de costos en exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 24,
+          "week": 12,
+          "unit_no": 3,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 25,
+          "week": 13,
+          "unit_no": 4,
+          "topic": "Documentación de exportación: ficha técnica, permisos y transferencias bancarias",
+          "chunks": [
+            "Exposición de los temas de clase. Revisión de los"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase. Revisión de los",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 26,
+          "week": 13,
+          "unit_no": 4,
+          "topic": "Operadores logísticos y funciones. Modos de transporte para exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 27,
+          "week": 14,
+          "unit_no": 4,
+          "topic": "Documentación y procesos logísticos en el transporte internacional",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 28,
+          "week": 14,
+          "unit_no": 4,
+          "topic": "Evaluación de términos de pago para clientes internacionales",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 29,
+          "week": 15,
+          "unit_no": 4,
+          "topic": "Estrategias de financiamiento para exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 30,
+          "week": 15,
+          "unit_no": 4,
+          "topic": "Estrategias para reducción de costos logísticos",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 31,
+          "week": 16,
+          "unit_no": 4,
+          "topic": "Análisis de riesgos en el comercio internacional y mitigación en exportaciones",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 32,
+          "week": 16,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 33,
+          "week": 17,
+          "unit_no": 4,
+          "topic": "Taller: Simulación del proceso integral de exportación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 34,
+          "week": 17,
+          "unit_no": 4,
+          "topic": "Avance de Trabajo de Investigación",
+          "chunks": [
+            "Revisión de los materiales de la semana. Evaluación",
+            "PARTICIPACIÓN EN CLASE"
+          ],
+          "activities": [
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ]
+        },
+        {
+          "session": 35,
+          "week": 18,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ]
+        }
+      ]
+    },
+    "INTELIGENCIA DE MERCADOS INTERNACIONALES": {
+      "course": "INTELIGENCIA DE MERCADOS INTERNACIONALES",
+      "courseId": "449a16cc-1948-5cec-9747-d4b3243d506c",
+      "sectionId": "e6307e26-590b-55fc-8242-c225fc9ffb15",
+      "sessions_per_week": 2,
+      "sessions_count": 35,
+      "weeks_count": 18,
+      "units": [
+        {
+          "no": 1,
+          "name": "Fundamentos de la inteligencia de mercados internacionales",
+          "weeks": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "no": 2,
+          "name": "Recolección y análisis de datos de mercado",
+          "weeks": [
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "no": 3,
+          "name": "Análisis de la competencia y tendencias del consumidor",
+          "weeks": [
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        {
+          "no": 4,
+          "name": "Estrategias comerciales basadas en inteligencia de mercado",
+          "weeks": [
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ]
+        }
+      ],
+      "weeks": [
+        {
+          "week": 1,
+          "unit_no": 1,
+          "unit": "Fundamentos de la inteligencia de mercados internacionales",
+          "sessions": [
+            {
+              "n": 1,
+              "topic": "Definición y objetivos de la inteligencia de mercados",
+              "activities": [
+                {
+                  "text": "Presentación del curso. Elección de delegado",
+                  "kind": "presentacion"
+                }
+              ]
+            },
+            {
+              "n": 2,
+              "topic": "La inteligencia de mercados en el comercio internacional",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Definición y objetivos de la inteligencia de mercados",
+            "La inteligencia de mercados en el comercio internacional"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso. Elección de delegado",
+              "kind": "presentacion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Definición y objetivos de la inteligencia de mercados"
+        },
+        {
+          "week": 2,
+          "unit_no": 1,
+          "unit": "Fundamentos de la inteligencia de mercados internacionales",
+          "sessions": [
+            {
+              "n": 3,
+              "topic": "Análisis del entorno macroeconómico y su influencia en los mercados",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 4,
+              "topic": "Identificación de oportunidades y amenazas en mercados internacionales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Análisis del entorno macroeconómico y su influencia en los mercados",
+            "Identificación de oportunidades y amenazas en mercados internacionales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Análisis del entorno macroeconómico y su influencia en los mercados"
+        },
+        {
+          "week": 3,
+          "unit_no": 1,
+          "unit": "Fundamentos de la inteligencia de mercados internacionales",
+          "sessions": [
+            {
+              "n": 5,
+              "topic": "Fuentes de información para inteligencia de mercados",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 6,
+              "topic": "Taller – Búsqueda de información utilizando base de datos de investigación de mercados",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Fuentes de información para inteligencia de mercados",
+            "Taller – Búsqueda de información utilizando base de datos de investigación de mercados"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Fuentes de información para inteligencia de mercados"
+        },
+        {
+          "week": 4,
+          "unit_no": 1,
+          "unit": "Fundamentos de la inteligencia de mercados internacionales",
+          "sessions": [
+            {
+              "n": 7,
+              "topic": "Casos de estudio sobre el uso de inteligencia de mercados en la toma de decisiones",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 8,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 1",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Casos de estudio sobre el uso de inteligencia de mercados en la toma de decisiones"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "mode": "evaluacion",
+          "summary": "Casos de estudio sobre el uso de inteligencia de mercados en la toma de decisiones"
+        },
+        {
+          "week": 5,
+          "unit_no": 2,
+          "unit": "Recolección y análisis de datos de mercado",
+          "sessions": [
+            {
+              "n": 9,
+              "topic": "Métodos de recolección de datos: Encuestas, entrevistas, grupos focales, etc",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 10,
+              "topic": "Técnicas de análisis de datos cuantitativos y cualitativos",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Métodos de recolección de datos: Encuestas, entrevistas, grupos focales, etc",
+            "Técnicas de análisis de datos cuantitativos y cualitativos"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Métodos de recolección de datos: Encuestas, entrevistas, grupos focales, etc"
+        },
+        {
+          "week": 6,
+          "unit_no": 2,
+          "unit": "Recolección y análisis de datos de mercado",
+          "sessions": [
+            {
+              "n": 11,
+              "topic": "Métodos de recolección de datos",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 12,
+              "topic": "Herramientas de análisis estadístico básico",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Métodos de recolección de datos",
+            "Herramientas de análisis estadístico básico"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Métodos de recolección de datos"
+        },
+        {
+          "week": 7,
+          "unit_no": 2,
+          "unit": "Recolección y análisis de datos de mercado",
+          "sessions": [
+            {
+              "n": 13,
+              "topic": "Herramientas de análisis estadístico básico",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                },
+                {
+                  "text": "Revisión de los materiales de la semana. Taller aplicado. Análisis de tendencias de mercad",
+                  "kind": "repaso"
+                }
+              ]
+            },
+            {
+              "n": 14,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Herramientas de análisis estadístico básico"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Revisión de los materiales de la semana. Taller aplicado. Análisis de tendencias de mercad",
+              "kind": "repaso"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Herramientas de análisis estadístico básico"
+        },
+        {
+          "week": 8,
+          "unit_no": 2,
+          "unit": "Recolección y análisis de datos de mercado",
+          "sessions": [
+            {
+              "n": 15,
+              "topic": "Análisis de mercado utilizando base de datos de investigación de mercados",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 16,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 2",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Análisis de mercado utilizando base de datos de investigación de mercados"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "mode": "evaluacion",
+          "summary": "Análisis de mercado utilizando base de datos de investigación de mercados"
+        },
+        {
+          "week": 9,
+          "unit_no": 3,
+          "unit": "Análisis de la competencia y tendencias del consumidor",
+          "sessions": [
+            {
+              "n": 17,
+              "topic": "Análisis de la competencia en mercados globales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 18,
+              "topic": "Estrategias de posicionamiento frente a la competencia",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Análisis de la competencia en mercados globales",
+            "Estrategias de posicionamiento frente a la competencia"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Análisis de la competencia en mercados globales"
+        },
+        {
+          "week": 10,
+          "unit_no": 3,
+          "unit": "Análisis de la competencia y tendencias del consumidor",
+          "sessions": [
+            {
+              "n": 19,
+              "topic": "Segmentación y perfil del consumidor global",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 20,
+              "topic": "Identificación de tendencias de consumo en mercados internacionales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Segmentación y perfil del consumidor global",
+            "Identificación de tendencias de consumo en mercados internacionales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Segmentación y perfil del consumidor global"
+        },
+        {
+          "week": 11,
+          "unit_no": 3,
+          "unit": "Análisis de la competencia y tendencias del consumidor",
+          "sessions": [
+            {
+              "n": 21,
+              "topic": "Análisis de la competencia utilizando base de datos de investigación de mercados",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 22,
+              "topic": "Análisis de tendencias utilizando base de datos de investigación de mercados",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Análisis de la competencia utilizando base de datos de investigación de mercados",
+            "Análisis de tendencias utilizando base de datos de investigación de mercados"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Análisis de la competencia utilizando base de datos de investigación de mercados"
+        },
+        {
+          "week": 12,
+          "unit_no": 3,
+          "unit": "Análisis de la competencia y tendencias del consumidor",
+          "sessions": [
+            {
+              "n": 23,
+              "topic": "Diseño de productos según tendencias globales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 24,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 3",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Diseño de productos según tendencias globales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "mode": "evaluacion",
+          "summary": "Diseño de productos según tendencias globales"
+        },
+        {
+          "week": 13,
+          "unit_no": 4,
+          "unit": "Estrategias comerciales basadas en inteligencia de mercado",
+          "sessions": [
+            {
+              "n": 25,
+              "topic": "Diseño de estrategias comerciales en mercados internacionales en base a la inteligencia de mercado",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 26,
+              "topic": "Análisis de estrategias de entrada a mercados globales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Diseño de estrategias comerciales en mercados internacionales en base a la inteligencia de mercado",
+            "Análisis de estrategias de entrada a mercados globales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Diseño de estrategias comerciales en mercados internacionales en base a la inteligencia de mercado"
+        },
+        {
+          "week": 14,
+          "unit_no": 4,
+          "unit": "Estrategias comerciales basadas en inteligencia de mercado",
+          "sessions": [
+            {
+              "n": 27,
+              "topic": "Análisis de riesgos y beneficios en la expansión internacional",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 28,
+              "topic": "Adaptación de productos y servicios al mercado destino",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Análisis de riesgos y beneficios en la expansión internacional",
+            "Adaptación de productos y servicios al mercado destino"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Análisis de riesgos y beneficios en la expansión internacional"
+        },
+        {
+          "week": 15,
+          "unit_no": 4,
+          "unit": "Estrategias comerciales basadas en inteligencia de mercado",
+          "sessions": [
+            {
+              "n": 29,
+              "topic": "Análisis de estrategias de precios y distribución basado en la competencia y mercado",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 30,
+              "topic": "Uso de datos para decisiones de localización de la oferta",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Análisis de estrategias de precios y distribución basado en la competencia y mercado",
+            "Uso de datos para decisiones de localización de la oferta"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Análisis de estrategias de precios y distribución basado en la competencia y mercado"
+        },
+        {
+          "week": 16,
+          "unit_no": 4,
+          "unit": "Estrategias comerciales basadas en inteligencia de mercado",
+          "sessions": [
+            {
+              "n": 31,
+              "topic": "Uso de datos para decisiones de la expansión de la oferta",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 32,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 4",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Uso de datos para decisiones de la expansión de la oferta"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "mode": "evaluacion",
+          "summary": "Uso de datos para decisiones de la expansión de la oferta"
+        },
+        {
+          "week": 17,
+          "unit_no": 4,
+          "unit": "Estrategias comerciales basadas en inteligencia de mercado",
+          "sessions": [
+            {
+              "n": 33,
+              "topic": "Campañas de marketing más efectivas basadas en análisis de datos",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            },
+            {
+              "n": 34,
+              "topic": "Sesión integradora",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                },
+                {
+                  "text": "Revisión de los materiales de la semana. Evaluación",
+                  "kind": "repaso"
+                },
+                {
+                  "text": "PARTICIPACIÓN EN CLASE",
+                  "kind": "participacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Campañas de marketing más efectivas basadas en análisis de datos",
+            "Sesión integradora"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Campañas de marketing más efectivas basadas en análisis de datos"
+        },
+        {
+          "week": 18,
+          "unit_no": 4,
+          "unit": "Estrategias comerciales basadas en inteligencia de mercado",
+          "sessions": [
+            {
+              "n": 35,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TRABAJO DE INVESTIGACIÓN"
+        }
+      ],
+      "sessions": [
+        {
+          "session": 1,
+          "week": 1,
+          "unit_no": 1,
+          "topic": "Definición y objetivos de la inteligencia de mercados",
+          "chunks": [
+            "Presentación del curso. Elección de delegado",
+            "Formación de grupos"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso. Elección de delegado",
+              "kind": "presentacion"
+            }
+          ]
+        },
+        {
+          "session": 2,
+          "week": 1,
+          "unit_no": 1,
+          "topic": "La inteligencia de mercados en el comercio internacional",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 3,
+          "week": 2,
+          "unit_no": 1,
+          "topic": "Análisis del entorno macroeconómico y su influencia en los mercados",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 4,
+          "week": 2,
+          "unit_no": 1,
+          "topic": "Identificación de oportunidades y amenazas en mercados internacionales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 5,
+          "week": 3,
+          "unit_no": 1,
+          "topic": "Fuentes de información para inteligencia de mercados",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 6,
+          "week": 3,
+          "unit_no": 1,
+          "topic": "Taller – Búsqueda de información utilizando base de datos de investigación de mercados",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 7,
+          "week": 4,
+          "unit_no": 1,
+          "topic": "Casos de estudio sobre el uso de inteligencia de mercados en la toma de decisiones",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 8,
+          "week": 4,
+          "unit_no": 1,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 9,
+          "week": 5,
+          "unit_no": 2,
+          "topic": "Métodos de recolección de datos: Encuestas, entrevistas, grupos focales, etc",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 10,
+          "week": 5,
+          "unit_no": 2,
+          "topic": "Técnicas de análisis de datos cuantitativos y cualitativos",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 11,
+          "week": 6,
+          "unit_no": 2,
+          "topic": "Métodos de recolección de datos",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 12,
+          "week": 6,
+          "unit_no": 2,
+          "topic": "Herramientas de análisis estadístico básico",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 13,
+          "week": 7,
+          "unit_no": 2,
+          "topic": "Herramientas de análisis estadístico básico",
+          "chunks": [
+            "Exposición de los temas de clase",
+            "Revisión de los materiales de la semana. Taller aplicado. Análisis de tendencias de mercado"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Revisión de los materiales de la semana. Taller aplicado. Análisis de tendencias de mercad",
+              "kind": "repaso"
+            }
+          ]
+        },
+        {
+          "session": 14,
+          "week": 7,
+          "unit_no": 2,
+          "topic": "",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 15,
+          "week": 8,
+          "unit_no": 2,
+          "topic": "Análisis de mercado utilizando base de datos de investigación de mercados",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 16,
+          "week": 8,
+          "unit_no": 2,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 17,
+          "week": 9,
+          "unit_no": 3,
+          "topic": "Análisis de la competencia en mercados globales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 18,
+          "week": 9,
+          "unit_no": 3,
+          "topic": "Estrategias de posicionamiento frente a la competencia",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 19,
+          "week": 10,
+          "unit_no": 3,
+          "topic": "Segmentación y perfil del consumidor global",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 20,
+          "week": 10,
+          "unit_no": 3,
+          "topic": "Identificación de tendencias de consumo en mercados internacionales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 21,
+          "week": 11,
+          "unit_no": 3,
+          "topic": "Análisis de la competencia utilizando base de datos de investigación de mercados",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 22,
+          "week": 11,
+          "unit_no": 3,
+          "topic": "Análisis de tendencias utilizando base de datos de investigación de mercados",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 23,
+          "week": 12,
+          "unit_no": 3,
+          "topic": "Diseño de productos según tendencias globales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 24,
+          "week": 12,
+          "unit_no": 3,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 25,
+          "week": 13,
+          "unit_no": 4,
+          "topic": "Diseño de estrategias comerciales en mercados internacionales en base a la inteligencia de mercado",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 26,
+          "week": 13,
+          "unit_no": 4,
+          "topic": "Análisis de estrategias de entrada a mercados globales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 27,
+          "week": 14,
+          "unit_no": 4,
+          "topic": "Análisis de riesgos y beneficios en la expansión internacional",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 28,
+          "week": 14,
+          "unit_no": 4,
+          "topic": "Adaptación de productos y servicios al mercado destino",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 29,
+          "week": 15,
+          "unit_no": 4,
+          "topic": "Análisis de estrategias de precios y distribución basado en la competencia y mercado",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 30,
+          "week": 15,
+          "unit_no": 4,
+          "topic": "Uso de datos para decisiones de localización de la oferta",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 31,
+          "week": 16,
+          "unit_no": 4,
+          "topic": "Uso de datos para decisiones de la expansión de la oferta",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 32,
+          "week": 16,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 33,
+          "week": 17,
+          "unit_no": 4,
+          "topic": "Campañas de marketing más efectivas basadas en análisis de datos",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 34,
+          "week": 17,
+          "unit_no": 4,
+          "topic": "Sesión integradora",
+          "chunks": [
+            "Exposición de los temas de clase",
+            "Revisión de los materiales de la semana. Evaluación",
+            "PARTICIPACIÓN EN CLASE"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ]
+        },
+        {
+          "session": 35,
+          "week": 18,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ]
+        }
+      ]
+    },
+    "ORGANIZACION TRANSCULTURAL Y GLOBAL": {
+      "course": "ORGANIZACION TRANSCULTURAL Y GLOBAL",
+      "courseId": "03035cc5-2806-58df-8715-ef234681260b",
+      "sectionId": "73cc9866-f664-5367-b17b-af7b0ade5c06",
+      "sessions_per_week": 1,
+      "sessions_count": 18,
+      "weeks_count": 18,
+      "units": [
+        {
+          "no": 1,
+          "name": "El funcionamiento de la cultura en una sociedad",
+          "weeks": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "no": 2,
+          "name": "Cultura Global y Microculturas en las organizaciones",
+          "weeks": [
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "no": 3,
+          "name": "Liderazgo Transcultural",
+          "weeks": [
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        {
+          "no": 4,
+          "name": "Integración Cultural en entornos multiculturales",
+          "weeks": [
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ]
+        }
+      ],
+      "weeks": [
+        {
+          "week": 1,
+          "unit_no": 1,
+          "unit": "El funcionamiento de la cultura en una sociedad",
+          "sessions": [
+            {
+              "n": 1,
+              "topic": "Cultura (concepto, estructura, tipología), identidad y sociedad",
+              "activities": [
+                {
+                  "text": "Presentación del curso",
+                  "kind": "presentacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Cultura (concepto, estructura, tipología), identidad y sociedad"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso",
+              "kind": "presentacion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Cultura (concepto, estructura, tipología), identidad y sociedad"
+        },
+        {
+          "week": 2,
+          "unit_no": 1,
+          "unit": "El funcionamiento de la cultura en una sociedad",
+          "sessions": [
+            {
+              "n": 2,
+              "topic": "Modelo de dimensiones culturales de Hofstede. Comparación de países mediante el “Country comparison tool” de Hofstede",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Modelo de dimensiones culturales de Hofstede. Comparación de países mediante el “Country comparison tool” de Hofstede"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Modelo de dimensiones culturales de Hofstede. Comparación de países mediante el “Country comparison tool” de Hofstede"
+        },
+        {
+          "week": 3,
+          "unit_no": 1,
+          "unit": "El funcionamiento de la cultura en una sociedad",
+          "sessions": [
+            {
+              "n": 3,
+              "topic": "Modelo de dimensiones culturales Trompenaars",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Modelo de dimensiones culturales Trompenaars"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Modelo de dimensiones culturales Trompenaars"
+        },
+        {
+          "week": 4,
+          "unit_no": 1,
+          "unit": "El funcionamiento de la cultura en una sociedad",
+          "sessions": [
+            {
+              "n": 4,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 1",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TAREA ACADÉMICA 1"
+        },
+        {
+          "week": 5,
+          "unit_no": 2,
+          "unit": "Cultura Global y Microculturas en las organizaciones",
+          "sessions": [
+            {
+              "n": 5,
+              "topic": "Concepto de cultura global y su influencia en el mundo de los negocios",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Concepto de cultura global y su influencia en el mundo de los negocios"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Concepto de cultura global y su influencia en el mundo de los negocios"
+        },
+        {
+          "week": 6,
+          "unit_no": 2,
+          "unit": "Cultura Global y Microculturas en las organizaciones",
+          "sessions": [
+            {
+              "n": 6,
+              "topic": "Microculturas: Identificación y su impacto en la cultura organizacional",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Microculturas: Identificación y su impacto en la cultura organizacional"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Microculturas: Identificación y su impacto en la cultura organizacional"
+        },
+        {
+          "week": 7,
+          "unit_no": 2,
+          "unit": "Cultura Global y Microculturas en las organizaciones",
+          "sessions": [
+            {
+              "n": 7,
+              "topic": "Diversidad cultural y su manejo en las organizaciones",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Diversidad cultural y su manejo en las organizaciones"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Diversidad cultural y su manejo en las organizaciones"
+        },
+        {
+          "week": 8,
+          "unit_no": 2,
+          "unit": "Cultura Global y Microculturas en las organizaciones",
+          "sessions": [
+            {
+              "n": 8,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 2",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TAREA ACADÉMICA 2"
+        },
+        {
+          "week": 9,
+          "unit_no": 3,
+          "unit": "Liderazgo Transcultural",
+          "sessions": [
+            {
+              "n": 9,
+              "topic": "El liderazgo transcultural en entornos globales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "El liderazgo transcultural en entornos globales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "El liderazgo transcultural en entornos globales"
+        },
+        {
+          "week": 10,
+          "unit_no": 3,
+          "unit": "Liderazgo Transcultural",
+          "sessions": [
+            {
+              "n": 10,
+              "topic": "Inteligencia cultural como competencia esencial para el liderazgo",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Inteligencia cultural como competencia esencial para el liderazgo"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Inteligencia cultural como competencia esencial para el liderazgo"
+        },
+        {
+          "week": 11,
+          "unit_no": 3,
+          "unit": "Liderazgo Transcultural",
+          "sessions": [
+            {
+              "n": 11,
+              "topic": "La comunicación en entornos transculturales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "La comunicación en entornos transculturales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "La comunicación en entornos transculturales"
+        },
+        {
+          "week": 12,
+          "unit_no": 3,
+          "unit": "Liderazgo Transcultural",
+          "sessions": [
+            {
+              "n": 12,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 3",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TAREA ACADÉMICA 3"
+        },
+        {
+          "week": 13,
+          "unit_no": 4,
+          "unit": "Integración Cultural en entornos multiculturales",
+          "sessions": [
+            {
+              "n": 13,
+              "topic": "Estrategias de Integración Cultural en entornos multiculturales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Estrategias de Integración Cultural en entornos multiculturales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Estrategias de Integración Cultural en entornos multiculturales"
+        },
+        {
+          "week": 14,
+          "unit_no": 4,
+          "unit": "Integración Cultural en entornos multiculturales",
+          "sessions": [
+            {
+              "n": 14,
+              "topic": "Gestión de la Diversidad y la Inclusión en Organizaciones Globales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Gestión de la Diversidad y la Inclusión en Organizaciones Globales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Gestión de la Diversidad y la Inclusión en Organizaciones Globales"
+        },
+        {
+          "week": 15,
+          "unit_no": 4,
+          "unit": "Integración Cultural en entornos multiculturales",
+          "sessions": [
+            {
+              "n": 15,
+              "topic": "Resolución de Conflictos en Entornos Multiculturales",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Resolución de Conflictos en Entornos Multiculturales"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Resolución de Conflictos en Entornos Multiculturales"
+        },
+        {
+          "week": 16,
+          "unit_no": 4,
+          "unit": "Integración Cultural en entornos multiculturales",
+          "sessions": [
+            {
+              "n": 16,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 4",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TAREA ACADÉMICA 4"
+        },
+        {
+          "week": 17,
+          "unit_no": 4,
+          "unit": "Integración Cultural en entornos multiculturales",
+          "sessions": [
+            {
+              "n": 17,
+              "topic": "Desafíos culturales en procesos de integración de empresas que operan en diferentes países y culturas",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase",
+                  "kind": "exposicion"
+                },
+                {
+                  "text": "Revisión de los materiales de la semana. Evaluación",
+                  "kind": "repaso"
+                },
+                {
+                  "text": "PARTICIPACIÓN EN CLASE",
+                  "kind": "participacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Desafíos culturales en procesos de integración de empresas que operan en diferentes países y culturas"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Desafíos culturales en procesos de integración de empresas que operan en diferentes países y culturas"
+        },
+        {
+          "week": 18,
+          "unit_no": 4,
+          "unit": "Integración Cultural en entornos multiculturales",
+          "sessions": [
+            {
+              "n": 18,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TRABAJO DE INVESTIGACIÓN"
+        }
+      ],
+      "sessions": [
+        {
+          "session": 1,
+          "week": 1,
+          "unit_no": 1,
+          "topic": "Cultura (concepto, estructura, tipología), identidad y sociedad",
+          "chunks": [
+            "Presentación del curso",
+            "Elección del delegado",
+            "Formación de grupos"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso",
+              "kind": "presentacion"
+            }
+          ]
+        },
+        {
+          "session": 2,
+          "week": 2,
+          "unit_no": 1,
+          "topic": "Modelo de dimensiones culturales de Hofstede. Comparación de países mediante el “Country comparison tool” de Hofstede",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 3,
+          "week": 3,
+          "unit_no": 1,
+          "topic": "Modelo de dimensiones culturales Trompenaars",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 4,
+          "week": 4,
+          "unit_no": 1,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 5,
+          "week": 5,
+          "unit_no": 2,
+          "topic": "Concepto de cultura global y su influencia en el mundo de los negocios",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 6,
+          "week": 6,
+          "unit_no": 2,
+          "topic": "Microculturas: Identificación y su impacto en la cultura organizacional",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 7,
+          "week": 7,
+          "unit_no": 2,
+          "topic": "Diversidad cultural y su manejo en las organizaciones",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 8,
+          "week": 8,
+          "unit_no": 2,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 9,
+          "week": 9,
+          "unit_no": 3,
+          "topic": "El liderazgo transcultural en entornos globales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 10,
+          "week": 10,
+          "unit_no": 3,
+          "topic": "Inteligencia cultural como competencia esencial para el liderazgo",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 11,
+          "week": 11,
+          "unit_no": 3,
+          "topic": "La comunicación en entornos transculturales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 12,
+          "week": 12,
+          "unit_no": 3,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 13,
+          "week": 13,
+          "unit_no": 4,
+          "topic": "Estrategias de Integración Cultural en entornos multiculturales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 14,
+          "week": 14,
+          "unit_no": 4,
+          "topic": "Gestión de la Diversidad y la Inclusión en Organizaciones Globales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 15,
+          "week": 15,
+          "unit_no": 4,
+          "topic": "Resolución de Conflictos en Entornos Multiculturales",
+          "chunks": [
+            "Exposición de los temas de clase"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 16,
+          "week": 16,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 17,
+          "week": 17,
+          "unit_no": 4,
+          "topic": "Desafíos culturales en procesos de integración de empresas que operan en diferentes países y culturas",
+          "chunks": [
+            "Exposición de los temas de clase",
+            "Revisión de los materiales de la semana. Evaluación",
+            "PARTICIPACIÓN EN CLASE"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase",
+              "kind": "exposicion"
+            },
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ]
+        },
+        {
+          "session": 18,
+          "week": 18,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ]
+        }
+      ]
+    },
+    "IMPORTACIONES": {
+      "course": "IMPORTACIONES",
+      "courseId": "db494395-e3ba-5031-a4e6-f4135798cbd8",
+      "sectionId": "20c5e6a4-dd32-54a1-ad6a-40031e08fdee",
+      "sessions_per_week": 2,
+      "sessions_count": 35,
+      "weeks_count": 18,
+      "units": [
+        {
+          "no": 1,
+          "name": "El proceso de importación y su documentación",
+          "weeks": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "no": 2,
+          "name": "Oportunidades de mercado para importaciones",
+          "weeks": [
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        {
+          "no": 3,
+          "name": "Operaciones logísticas y aduaneras en importaciones",
+          "weeks": [
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        {
+          "no": 4,
+          "name": "Gestión de costos y fijación de precios de productos importados",
+          "weeks": [
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ]
+        }
+      ],
+      "weeks": [
+        {
+          "week": 1,
+          "unit_no": 1,
+          "unit": "El proceso de importación y su documentación",
+          "sessions": [
+            {
+              "n": 1,
+              "topic": "La importación y su relevancia en el comercio internacional",
+              "activities": [
+                {
+                  "text": "Presentación del curso",
+                  "kind": "presentacion"
+                }
+              ]
+            },
+            {
+              "n": 2,
+              "topic": "Marco normativo y regulaciones para el proceso de importaciones",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "La importación y su relevancia en el comercio internacional",
+            "Marco normativo y regulaciones para el proceso de importaciones"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso",
+              "kind": "presentacion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "La importación y su relevancia en el comercio internacional"
+        },
+        {
+          "week": 2,
+          "unit_no": 1,
+          "unit": "El proceso de importación y su documentación",
+          "sessions": [
+            {
+              "n": 3,
+              "topic": "Regímenes aduaneros aplicables a las importaciones",
+              "activities": []
+            },
+            {
+              "n": 4,
+              "topic": "Normativas peruanas aplicables a la importación",
+              "activities": [
+                {
+                  "text": "Exposición de los temas de clase. Revisión de los El proceso de importación y su documenta",
+                  "kind": "exposicion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Regímenes aduaneros aplicables a las importaciones",
+            "Normativas peruanas aplicables a la importación"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase. Revisión de los El proceso de importación y su documenta",
+              "kind": "exposicion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "exposicion",
+          "summary": "Regímenes aduaneros aplicables a las importaciones"
+        },
+        {
+          "week": 3,
+          "unit_no": 1,
+          "unit": "El proceso de importación y su documentación",
+          "sessions": [
+            {
+              "n": 5,
+              "topic": "Requisitos legales y regulatorios para importación en Perú. Documentación básica en el proceso de importación",
+              "activities": []
+            },
+            {
+              "n": 6,
+              "topic": "Taller: Identificación y análisis de documentos de importación",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Requisitos legales y regulatorios para importación en Perú. Documentación básica en el proceso de importación",
+            "Taller: Identificación y análisis de documentos de importación"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Requisitos legales y regulatorios para importación en Perú. Documentación básica en el proceso de importación"
+        },
+        {
+          "week": 4,
+          "unit_no": 1,
+          "unit": "El proceso de importación y su documentación",
+          "sessions": [
+            {
+              "n": 7,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Avance de la tarea académica",
+                  "kind": "entregable"
+                }
+              ]
+            },
+            {
+              "n": 8,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 1",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Avance de la tarea académica",
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "mode": "evaluacion",
+          "summary": "Avance de la tarea académica"
+        },
+        {
+          "week": 5,
+          "unit_no": 2,
+          "unit": "Oportunidades de mercado para importaciones",
+          "sessions": [
+            {
+              "n": 9,
+              "topic": "Análisis de mercados internacionales: Identificación de tendencias y demandas de productos",
+              "activities": []
+            },
+            {
+              "n": 10,
+              "topic": "Investigación de productos para la importación",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Análisis de mercados internacionales: Identificación de tendencias y demandas de productos",
+            "Investigación de productos para la importación"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Análisis de mercados internacionales: Identificación de tendencias y demandas de productos"
+        },
+        {
+          "week": 6,
+          "unit_no": 2,
+          "unit": "Oportunidades de mercado para importaciones",
+          "sessions": [
+            {
+              "n": 11,
+              "topic": "Análisis de los potenciales clientes",
+              "activities": []
+            },
+            {
+              "n": 12,
+              "topic": "Selección y evaluación de proveedores internacionales",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Análisis de los potenciales clientes",
+            "Selección y evaluación de proveedores internacionales"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Análisis de los potenciales clientes"
+        },
+        {
+          "week": 7,
+          "unit_no": 2,
+          "unit": "Oportunidades de mercado para importaciones",
+          "sessions": [
+            {
+              "n": 13,
+              "topic": "Barreras comerciales y regulaciones aplicables a las importaciones",
+              "activities": []
+            },
+            {
+              "n": 14,
+              "topic": "Taller: Identificación de oportunidades para la importación de mercancías",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Barreras comerciales y regulaciones aplicables a las importaciones",
+            "Taller: Identificación de oportunidades para la importación de mercancías"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Barreras comerciales y regulaciones aplicables a las importaciones"
+        },
+        {
+          "week": 8,
+          "unit_no": 2,
+          "unit": "Oportunidades de mercado para importaciones",
+          "sessions": [
+            {
+              "n": 15,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Avance de la tarea académica",
+                  "kind": "entregable"
+                }
+              ]
+            },
+            {
+              "n": 16,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 2",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Avance de la tarea académica",
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "mode": "evaluacion",
+          "summary": "Avance de la tarea académica"
+        },
+        {
+          "week": 9,
+          "unit_no": 3,
+          "unit": "Operaciones logísticas y aduaneras en importaciones",
+          "sessions": [
+            {
+              "n": 17,
+              "topic": "Modalidades de transporte para importaciones: marítimo, aéreo y terrestre",
+              "activities": []
+            },
+            {
+              "n": 18,
+              "topic": "Operadores logísticos: selección y gestión de servicios",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Modalidades de transporte para importaciones: marítimo, aéreo y terrestre",
+            "Operadores logísticos: selección y gestión de servicios"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Modalidades de transporte para importaciones: marítimo, aéreo y terrestre"
+        },
+        {
+          "week": 10,
+          "unit_no": 3,
+          "unit": "Operaciones logísticas y aduaneras en importaciones",
+          "sessions": [
+            {
+              "n": 19,
+              "topic": "Procedimientos aduaneros para importación: regímenes y normativas aplicables",
+              "activities": []
+            },
+            {
+              "n": 20,
+              "topic": "Documentación esencial en el proceso aduanero de importaciones",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Procedimientos aduaneros para importación: regímenes y normativas aplicables",
+            "Documentación esencial en el proceso aduanero de importaciones"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Procedimientos aduaneros para importación: regímenes y normativas aplicables"
+        },
+        {
+          "week": 11,
+          "unit_no": 3,
+          "unit": "Operaciones logísticas y aduaneras en importaciones",
+          "sessions": [
+            {
+              "n": 21,
+              "topic": "Identificación y mitigación de riesgos en el transporte y almacenamiento",
+              "activities": []
+            },
+            {
+              "n": 22,
+              "topic": "Taller: Simulación del proceso logístico y aduanero en una importación",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Identificación y mitigación de riesgos en el transporte y almacenamiento",
+            "Taller: Simulación del proceso logístico y aduanero en una importación"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Identificación y mitigación de riesgos en el transporte y almacenamiento"
+        },
+        {
+          "week": 12,
+          "unit_no": 3,
+          "unit": "Operaciones logísticas y aduaneras en importaciones",
+          "sessions": [
+            {
+              "n": 23,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Avance de la tarea académica",
+                  "kind": "entregable"
+                }
+              ]
+            },
+            {
+              "n": 24,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 3",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Avance de la tarea académica",
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "mode": "evaluacion",
+          "summary": "Avance de la tarea académica"
+        },
+        {
+          "week": 13,
+          "unit_no": 4,
+          "unit": "Gestión de costos y fijación de precios de productos importados",
+          "sessions": [
+            {
+              "n": 25,
+              "topic": "Estructura de costos en importaciones: costos directos e indirectos",
+              "activities": []
+            },
+            {
+              "n": 26,
+              "topic": "Aranceles aplicables a las importaciones",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Estructura de costos en importaciones: costos directos e indirectos",
+            "Aranceles aplicables a las importaciones"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Estructura de costos en importaciones: costos directos e indirectos"
+        },
+        {
+          "week": 14,
+          "unit_no": 4,
+          "unit": "Gestión de costos y fijación de precios de productos importados",
+          "sessions": [
+            {
+              "n": 27,
+              "topic": "Cálculo de impuestos y aranceles aplicables a importaciones",
+              "activities": []
+            },
+            {
+              "n": 28,
+              "topic": "Estrategias para la optimización de costos logísticos",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Cálculo de impuestos y aranceles aplicables a importaciones",
+            "Estrategias para la optimización de costos logísticos"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Cálculo de impuestos y aranceles aplicables a importaciones"
+        },
+        {
+          "week": 15,
+          "unit_no": 4,
+          "unit": "Gestión de costos y fijación de precios de productos importados",
+          "sessions": [
+            {
+              "n": 29,
+              "topic": "Aspectos básicos de la carga consolidada (LCL) y la carga completa (FCL)",
+              "activities": []
+            },
+            {
+              "n": 30,
+              "topic": "Análisis de costos en importaciones LCL y FCL",
+              "activities": []
+            }
+          ],
+          "topics": [
+            "Aspectos básicos de la carga consolidada (LCL) y la carga completa (FCL)",
+            "Análisis de costos en importaciones LCL y FCL"
+          ],
+          "activities": [],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Aspectos básicos de la carga consolidada (LCL) y la carga completa (FCL)"
+        },
+        {
+          "week": 16,
+          "unit_no": 4,
+          "unit": "Gestión de costos y fijación de precios de productos importados",
+          "sessions": [
+            {
+              "n": 31,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Avance de la tarea académica",
+                  "kind": "entregable"
+                }
+              ]
+            },
+            {
+              "n": 32,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TAREA ACADÉMICA 4",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            },
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Avance de la tarea académica",
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "mode": "evaluacion",
+          "summary": "Avance de la tarea académica"
+        },
+        {
+          "week": 17,
+          "unit_no": 4,
+          "unit": "Gestión de costos y fijación de precios de productos importados",
+          "sessions": [
+            {
+              "n": 33,
+              "topic": "Fijación de precios de venta para productos importados",
+              "activities": []
+            },
+            {
+              "n": 34,
+              "topic": "Taller: Análisis de costos y determinación de precios para la importación de productos",
+              "activities": [
+                {
+                  "text": "Revisión de los materiales de la semana. Evaluación",
+                  "kind": "repaso"
+                },
+                {
+                  "text": "PARTICIPACIÓN EN CLASE",
+                  "kind": "participacion"
+                }
+              ]
+            }
+          ],
+          "topics": [
+            "Fijación de precios de venta para productos importados",
+            "Taller: Análisis de costos y determinación de precios para la importación de productos"
+          ],
+          "activities": [
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ],
+          "has_deliverable": false,
+          "deliverables": [],
+          "mode": "clase",
+          "summary": "Fijación de precios de venta para productos importados"
+        },
+        {
+          "week": 18,
+          "unit_no": 4,
+          "unit": "Gestión de costos y fijación de precios de productos importados",
+          "sessions": [
+            {
+              "n": 35,
+              "topic": "",
+              "activities": [
+                {
+                  "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+                  "kind": "evaluacion"
+                }
+              ]
+            }
+          ],
+          "topics": [],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ],
+          "has_deliverable": true,
+          "deliverables": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "mode": "evaluacion",
+          "summary": "Evaluación TRABAJO DE INVESTIGACIÓN"
+        }
+      ],
+      "sessions": [
+        {
+          "session": 1,
+          "week": 1,
+          "unit_no": 1,
+          "topic": "La importación y su relevancia en el comercio internacional",
+          "chunks": [
+            "Presentación del curso",
+            "Elección del delegado",
+            "Formación de grupos"
+          ],
+          "activities": [
+            {
+              "text": "Presentación del curso",
+              "kind": "presentacion"
+            }
+          ]
+        },
+        {
+          "session": 2,
+          "week": 1,
+          "unit_no": 1,
+          "topic": "Marco normativo y regulaciones para el proceso de importaciones",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 3,
+          "week": 2,
+          "unit_no": 1,
+          "topic": "Regímenes aduaneros aplicables a las importaciones",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 4,
+          "week": 2,
+          "unit_no": 1,
+          "topic": "Normativas peruanas aplicables a la importación",
+          "chunks": [
+            "Exposición de los temas de clase. Revisión de los El proceso de importación y su documentación materiales de la semana"
+          ],
+          "activities": [
+            {
+              "text": "Exposición de los temas de clase. Revisión de los El proceso de importación y su documenta",
+              "kind": "exposicion"
+            }
+          ]
+        },
+        {
+          "session": 5,
+          "week": 3,
+          "unit_no": 1,
+          "topic": "Requisitos legales y regulatorios para importación en Perú. Documentación básica en el proceso de importación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 6,
+          "week": 3,
+          "unit_no": 1,
+          "topic": "Taller: Identificación y análisis de documentos de importación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 7,
+          "week": 4,
+          "unit_no": 1,
+          "topic": "",
+          "chunks": [
+            "Avance de la tarea académica"
+          ],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            }
+          ]
+        },
+        {
+          "session": 8,
+          "week": 4,
+          "unit_no": 1,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 1"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 1",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 9,
+          "week": 5,
+          "unit_no": 2,
+          "topic": "Análisis de mercados internacionales: Identificación de tendencias y demandas de productos",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 10,
+          "week": 5,
+          "unit_no": 2,
+          "topic": "Investigación de productos para la importación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 11,
+          "week": 6,
+          "unit_no": 2,
+          "topic": "Análisis de los potenciales clientes",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 12,
+          "week": 6,
+          "unit_no": 2,
+          "topic": "Selección y evaluación de proveedores internacionales",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 13,
+          "week": 7,
+          "unit_no": 2,
+          "topic": "Barreras comerciales y regulaciones aplicables a las importaciones",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 14,
+          "week": 7,
+          "unit_no": 2,
+          "topic": "Taller: Identificación de oportunidades para la importación de mercancías",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 15,
+          "week": 8,
+          "unit_no": 2,
+          "topic": "",
+          "chunks": [
+            "Avance de la tarea académica"
+          ],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            }
+          ]
+        },
+        {
+          "session": 16,
+          "week": 8,
+          "unit_no": 2,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 2"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 2",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 17,
+          "week": 9,
+          "unit_no": 3,
+          "topic": "Modalidades de transporte para importaciones: marítimo, aéreo y terrestre",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 18,
+          "week": 9,
+          "unit_no": 3,
+          "topic": "Operadores logísticos: selección y gestión de servicios",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 19,
+          "week": 10,
+          "unit_no": 3,
+          "topic": "Procedimientos aduaneros para importación: regímenes y normativas aplicables",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 20,
+          "week": 10,
+          "unit_no": 3,
+          "topic": "Documentación esencial en el proceso aduanero de importaciones",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 21,
+          "week": 11,
+          "unit_no": 3,
+          "topic": "Identificación y mitigación de riesgos en el transporte y almacenamiento",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 22,
+          "week": 11,
+          "unit_no": 3,
+          "topic": "Taller: Simulación del proceso logístico y aduanero en una importación",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 23,
+          "week": 12,
+          "unit_no": 3,
+          "topic": "",
+          "chunks": [
+            "Avance de la tarea académica"
+          ],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            }
+          ]
+        },
+        {
+          "session": 24,
+          "week": 12,
+          "unit_no": 3,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 3"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 3",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 25,
+          "week": 13,
+          "unit_no": 4,
+          "topic": "Estructura de costos en importaciones: costos directos e indirectos",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 26,
+          "week": 13,
+          "unit_no": 4,
+          "topic": "Aranceles aplicables a las importaciones",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 27,
+          "week": 14,
+          "unit_no": 4,
+          "topic": "Cálculo de impuestos y aranceles aplicables a importaciones",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 28,
+          "week": 14,
+          "unit_no": 4,
+          "topic": "Estrategias para la optimización de costos logísticos",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 29,
+          "week": 15,
+          "unit_no": 4,
+          "topic": "Aspectos básicos de la carga consolidada (LCL) y la carga completa (FCL)",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 30,
+          "week": 15,
+          "unit_no": 4,
+          "topic": "Análisis de costos en importaciones LCL y FCL",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 31,
+          "week": 16,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Avance de la tarea académica"
+          ],
+          "activities": [
+            {
+              "text": "Avance de la tarea académica",
+              "kind": "entregable"
+            }
+          ]
+        },
+        {
+          "session": 32,
+          "week": 16,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TAREA ACADÉMICA 4"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TAREA ACADÉMICA 4",
+              "kind": "evaluacion"
+            }
+          ]
+        },
+        {
+          "session": 33,
+          "week": 17,
+          "unit_no": 4,
+          "topic": "Fijación de precios de venta para productos importados",
+          "chunks": [],
+          "activities": []
+        },
+        {
+          "session": 34,
+          "week": 17,
+          "unit_no": 4,
+          "topic": "Taller: Análisis de costos y determinación de precios para la importación de productos",
+          "chunks": [
+            "Revisión de los materiales de la semana. Evaluación",
+            "PARTICIPACIÓN EN CLASE"
+          ],
+          "activities": [
+            {
+              "text": "Revisión de los materiales de la semana. Evaluación",
+              "kind": "repaso"
+            },
+            {
+              "text": "PARTICIPACIÓN EN CLASE",
+              "kind": "participacion"
+            }
+          ]
+        },
+        {
+          "session": 35,
+          "week": 18,
+          "unit_no": 4,
+          "topic": "",
+          "chunks": [
+            "Evaluación TRABAJO DE INVESTIGACIÓN"
+          ],
+          "activities": [
+            {
+              "text": "Evaluación TRABAJO DE INVESTIGACIÓN",
+              "kind": "evaluacion"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
