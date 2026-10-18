@@ -19,6 +19,7 @@ import {
   type VoiceOption
 } from "../lib/voice";
 import { useAccess } from "../stores/useAccess";
+import { LOCAL_OWNER_EMAIL, clearLocalOwner, readLocalOwner, setLocalOwner } from "../lib/billing";
 import { Link } from "react-router-dom";
 import { toast } from "../stores/useToasts";
 import Switch from "../components/ui/Switch";
@@ -49,6 +50,24 @@ export default function Settings() {
   const [rate, setRate] = useState(getSpeechRate());
   const [voiceList, setVoiceList] = useState<VoiceOption[]>([]);
   const [selectedVoice, setSelectedVoice] = useState("");
+  const localOwner = readLocalOwner();
+  const [ownerEmail, setOwnerEmail] = useState(localOwner?.email || LOCAL_OWNER_EMAIL);
+
+  const activateOwner = async () => {
+    const saved = setLocalOwner(ownerEmail);
+    if (!saved) {
+      toast("Escribe el correo del propietario", "⚠️");
+      return;
+    }
+    await refreshAccess();
+    toast(`Cuenta propietaria activada · ${saved.email}`, "👑");
+  };
+
+  const deactivateOwner = async () => {
+    clearLocalOwner();
+    await refreshAccess();
+    toast("Cuenta propietaria desactivada en este dispositivo", "🔓");
+  };
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) return;
@@ -448,7 +467,9 @@ export default function Settings() {
                     ? "Configura Supabase (ver .env)"
                     : cloudEnabled
                       ? `Activa · ${cloudUser?.email ?? "sesión anónima"}`
-                      : "Desactivada"}
+                      : localOwner
+                        ? `Cuenta propietaria · ${localOwner.email}`
+                        : "Desactivada"}
                 </div>
               </div>
             </div>
@@ -487,6 +508,42 @@ export default function Settings() {
           {access.plan !== "owner" && access.plan !== "student" && (
             <Link className="btn btn-primary btn-block mt-16" to="/planes">Ver planes</Link>
           )}
+
+          <div className="mt-16" style={{ borderTop: "1px solid var(--border)", paddingTop: 12 }}>
+            {localOwner ? (
+              <>
+                <div className="list-title">👑 Cuenta propietaria · acceso total</div>
+                <div className="list-sub">
+                  {localOwner.email} · en este dispositivo
+                  {localOwner.since ? ` desde ${new Date(localOwner.since).toLocaleDateString("es-PE")}` : ""}
+                </div>
+                <button className="btn btn-secondary btn-sm mt-8" onClick={deactivateOwner}>
+                  Salir de la cuenta propietaria
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="list-title">Cuenta de administrador</div>
+                <div className="list-sub">
+                  Si eres el propietario de Habits, actívala aquí en este dispositivo. No necesita
+                  contraseña: desbloquea el acceso total de forma local.
+                </div>
+                <div className="field-group mt-8">
+                  <label className="field-label">Correo del propietario</label>
+                  <input
+                    type="email"
+                    className="field"
+                    placeholder="habits@correo.com"
+                    value={ownerEmail}
+                    onChange={(e) => setOwnerEmail(e.target.value)}
+                  />
+                </div>
+                <button className="btn btn-primary btn-sm mt-8" onClick={activateOwner}>
+                  Activar cuenta de administrador
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         {installEvt && (
