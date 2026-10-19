@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../stores/useStore";
+import { useCourseMemory } from "../lib/courseMemory";
+import { buildClassBrief, nextClassBrief, type ClassBrief } from "../lib/classBrief";
+import { ClassBriefCard, ClassBriefSheet, CLASS_URL, connectUtpClass } from "../components/ClassBrief";
+import { agentOpenUrl, agentUtpRefresh } from "../lib/desktop";
 import type { Course, ScheduleItem, Day } from "../lib/types";
 import { DAY_SHORT } from "../lib/dates";
 import { uid } from "../lib/uid";
@@ -16,7 +20,9 @@ import {
   IconPencil,
   IconClock,
   IconCheck,
-  IconBook
+  IconBook,
+  IconChat,
+  IconRefresh
 } from "../components/ui/Icons";
 
 export const COURSE_COLORS = [
@@ -63,6 +69,52 @@ export default function Courses() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [dayTab, setDayTab] = useState<number>(new Date().getDay());
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [brief, setBrief] = useState<ClassBrief | null>(null);
+  const [needsConnect, setNeedsConnect] = useState(false);
+  const memory = useCourseMemory();
+  const tasks = useStore((s) => s.data.tasks);
+
+  // Brief por curso (UTP+class): tema de la clase, de qué trata, clase pasada,
+  // tarea pendiente y cómo empezar.
+  const briefs = useMemo(() => {
+    const map = new Map<string, ClassBrief>();
+    if (!memory) return map;
+    for (const c of courses) {
+      const item = buildClassBrief({ memory, course: c, tasks });
+      if (item) map.set(c.id, item);
+    }
+    return map;
+  }, [memory, courses, tasks]);
+  const nextBrief = useMemo(
+    () => (memory ? nextClassBrief(memory, courses, tasks) : null),
+    [memory, courses, tasks]
+  );
+
+  const refreshFromUtp = async () => {
+    toast("Leyendo UTP+class…", "🔄");
+    const result = await agentUtpRefresh();
+    if (!result?.ok && !result?.steps) {
+      toast("El agente local no respondió. Enciéndelo con scripts\\jarvis-agent.bat", "⚠️");
+      return;
+    }
+    setNeedsConnect(Boolean(result?.needs_connect));
+    if (result?.needs_connect) {
+      toast("Sílabo al día. La sesión del aula venció: pulsa el botón azul para reconectar.", "🔌");
+      return;
+    }
+    toast(
+      result?.live
+        ? `Listo: sílabo y tareas en vivo de UTP+class (semana ${result.current_week ?? "?"})`
+        : "Memoria de clases actualizada desde UTP+class",
+      "✅"
+    );
+    window.setTimeout(() => window.location.reload(), 800);
+  };
+
+  const connectUtp = async () => {
+    const ok = await connectUtpClass();
+    if (ok) setNeedsConnect(true); // queda pendiente pulsar el botón dentro del aula
+  };
 
   const addScheduleRow = () =>
     setDraft((d) =>
@@ -148,9 +200,28 @@ export default function Courses() {
             <h1 className="page-title">Cursos</h1>
             <p className="page-subtitle">Tu horario semanal y tus materias</p>
           </div>
-          <button className="btn btn-primary btn-icon" onClick={() => setDraft(emptyDraft())} aria-label="Agregar curso">
-            <IconPlus size={22} />
-          </button>
+          <div className="row" style={{ gap: 8 }}>
+            <button
+              className="btn btn-secondary btn-icon"
+              onClick={() => void refreshFromUtp()}
+              aria-label="Actualizar desde UTP+class"
+              title="Releer UTP+class (memoria de clases)"
+            >
+              <IconRefresh size={20} />
+            </button>
+            {needsConnect && (
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => void connectUtp()}
+                title="La sesión del aula venció: reconectar con un clic"
+              >
+               🔌 Conectar UTP+class
+              </button>
+            )}
+            <button className="btn btn-primary btn-icon" onClick={() => setDraft(emptyDraft())} aria-label="Agregar curso">
+              <IconPlus size={22} />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -167,6 +238,39 @@ export default function Courses() {
         ))}
       </div>
 
+      {nextBrief && (
+        <div className="mt-16">
+          <ClassBriefCard
+            brief={nextBrief}
+            onOpen={() => setBrief(nextBrief)}
+            needsConnect={needsConnect}
+            onConnect={() => void connectUtp()}
+          />
+        </div>
+      )}
+      {!nextBrief && memory && courses.length > 0 && (
+        <div className="card card-section mt-16">
+          <div className="list-title">🎓 Memoria de clases UTP</div>
+          <div className="muted mt-8" style={{ fontSize: 13, lineHeight: 1.45 }}>
+            Tengo la memoria del sílabo ({Object.keys(memory.courses).length} cursos), pero ningún curso con
+            horario coincide todavía. Revisa el nombre de tus cursos o ábrelos en UTP+class.
+          </div>
+          <div className="mt-16">
+            <button className="btn btn-secondary btn-sm" onClick={() => void agentOpenUrl(CLASS_URL)}>
+              Abrir UTP+class
+            </button>
+          </div>
+        </div>
+      )}
+      {!memory && (
+        <div className="card card-section mt-16">
+          <div className="list-title">🎓 Conectando con UTP+class…</div>
+          <div className="muted mt-8" style={{ fontSize: 13 }}>
+            Si no aparece, toca 🔄 arriba (necesita el agente local encendido).
+          </div>
+        </div>
+      )}
+
       <div className="stack mt-24">
         {daySchedule.length === 0 ? (
           <div className="card">
@@ -177,7 +281,9 @@ export default function Courses() {
             />
           </div>
         ) : (
-          daySchedule.map(({ course, s }, i) => (
+          daySchedule.map(({ course, s }, i) => {
+            const info = briefs.get(course.id);
+            return (
             <div className="card card-section reveal" key={s.id} style={{ transitionDelay: `${i * 40}ms` }}>
               <div className="row">
                 <div className="dot" style={{ background: course.color }} />
@@ -193,13 +299,36 @@ export default function Courses() {
                   <IconChevron size={18} style={{ transform: expanded === course.id ? "rotate(90deg)" : "none", transition: "transform 0.2s" }} />
                 </button>
               </div>
+              {info && (
+                <div className="mt-8" style={{ fontSize: 13, lineHeight: 1.45 }}>
+                  <div className="row" style={{ gap: 6, alignItems: "flex-start" }}>
+                    <span>🎯</span>
+                    <span className="grow">
+                      <strong>Tema de la clase (semana {info.week}):</strong> {info.topic}
+                    </span>
+                  </div>
+                  {info.pending[0] && (
+                    <div className="row mt-8" style={{ gap: 6, alignItems: "flex-start", color: "var(--red)" }}>
+                      <span>⚠️</span>
+                      <span className="grow">
+                        {info.pending[0].source === "tarea" ? "Tarea pendiente" : "Entrega"} (sem.{" "}
+                        {info.pending[0].week}): {info.pending[0].text}
+                      </span>
+                    </div>
+                  )}
+                  <button className="btn btn-secondary btn-sm mt-8" onClick={() => setBrief(info)}>
+                    <IconChat size={14} /> De qué trata y cómo empezar
+                  </button>
+                </div>
+              )}
               {expanded === course.id && (
                 <div className="mt-16" style={{ borderTop: "1px solid var(--separator)", paddingTop: 12 }}>
                   <CourseDetails course={course} onEdit={() => openEdit(course)} onDelete={() => setConfirmDelete(course.id)} />
                 </div>
               )}
             </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -223,7 +352,21 @@ export default function Courses() {
                     {c.schedule.length} {c.schedule.length === 1 ? "sesión" : "sesiones"}
                     {c.professor ? ` · ${c.professor}` : ""}
                   </div>
+                  {briefs.get(c.id) && (
+                    <div className="list-sub">
+                      🎯 Semana {briefs.get(c.id)!.week}: {briefs.get(c.id)!.topic}
+                    </div>
+                  )}
                 </div>
+                {briefs.get(c.id) && (
+                  <button
+                    className="btn-icon"
+                    title="Tema de la clase, de qué trata y tarea pendiente"
+                    onClick={(e) => { e.stopPropagation(); setBrief(briefs.get(c.id)!); }}
+                  >
+                    <IconChat size={18} />
+                  </button>
+                )}
                 <button
                   className="btn-icon"
                   style={{ color: c.color }}
@@ -238,6 +381,8 @@ export default function Courses() {
           </div>
         )}
       </div>
+
+      <ClassBriefSheet brief={brief} open={brief !== null} onClose={() => setBrief(null)} />
 
       <Sheet open={draft !== null} title={draft?.id ? "Editar curso" : "Nuevo curso"} onClose={() => setDraft(null)}>
         {draft && (

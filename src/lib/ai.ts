@@ -169,3 +169,132 @@ export async function improveText(
   }
   return { text: localCorrect(trimmed), usedAi: false };
 }
+
+/* ---------------------------------------------------------------------------
+ * Proveedores con capa GRATIS (compatibles con OpenAI).
+ *
+ * Para que la app sirva a otras personas sin depender de la laptop de nadie ni
+ * gastar crédito: cada quien pega su propia clave gratuita y el consumo va a su
+ * cuenta. Si algún día se acaba la clave, el motor del navegador sigue andando.
+ * ------------------------------------------------------------------------- */
+
+export interface FreeProvider {
+  id: string;
+  name: string;
+  baseUrl: string;
+  model: string;
+  keyUrl: string;
+  note: string;
+}
+
+export const FREE_PROVIDERS: FreeProvider[] = [
+  {
+    id: "groq",
+    name: "Groq (gratis)",
+    baseUrl: "https://api.groq.com/openai/v1",
+    model: "openai/gpt-oss-120b",
+    keyUrl: "https://console.groq.com/keys",
+    note: "Muy rápido. Capa gratis con límite por minuto."
+  },
+  {
+    id: "gemini",
+    name: "Google Gemini (gratis)",
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    model: "gemini-3.8-flash",
+    keyUrl: "https://aistudio.google.com/apikey",
+    note: "Capa gratis diaria amplia. Buena para el celular."
+  },
+  {
+    id: "openrouter",
+    name: "OpenRouter (modelos gratis)",
+    baseUrl: "https://openrouter.ai/api/v1",
+    model: "openrouter/free",
+    keyUrl: "https://openrouter.ai/keys",
+    note: "Elige solo entre modelos gratuitos."
+  }
+];
+
+export function freeProvider(id: string): FreeProvider | undefined {
+  return FREE_PROVIDERS.find((p) => p.id === id);
+}
+
+/** Devuelve una configuración lista para usar con el proveedor gratuito elegido. */
+export function applyFreeProvider(cfg: AiConfig, id: string): AiConfig {
+  const p = freeProvider(id);
+  if (!p) return cfg;
+  return { ...cfg, baseUrl: p.baseUrl, model: p.model };
+}
+
+/** Detecta a qué proveedor gratuito corresponde una configuración guardada. */
+export function detectFreeProvider(cfg: AiConfig): string | null {
+  const base = cfg.baseUrl.trim().replace(/\/+$/, "");
+  const hit = FREE_PROVIDERS.find((p) => p.baseUrl.replace(/\/+$/, "") === base);
+  return hit ? hit.id : null;
+}
+
+function authHeaders(cfg: AiConfig, json: boolean): Record<string, string> {
+  const key = cfg.apiKey.trim();
+  const headers: Record<string, string> = {};
+  if (json) headers["Content-Type"] = "application/json";
+  if (key) headers.Authorization = `Bearer ${key}`;
+  return headers;
+}
+
+/** Lista los modelos que la clave del usuario realmente puede usar. */
+export async function listModels(cfg: AiConfig): Promise<string[]> {
+  const base = cfg.baseUrl.trim().replace(/\/+$/, "");
+  const res = await fetch(`${base}/models`, { headers: authHeaders(cfg, false) });
+  if (!res.ok) throw new Error(`No pude leer la lista de modelos (${res.status})`);
+  const data = await res.json();
+  const raw = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+  const ids = raw
+    .map((m: { id?: string }) => String(m?.id ?? ""))
+    .filter((id: string) => Boolean(id));
+  if (!ids.length) throw new Error("El proveedor no devolvió modelos");
+  return ids;
+}
+
+export interface AiTest {
+  ok: boolean;
+  ms: number;
+  model: string;
+  text: string;
+  error?: string;
+}
+
+/** Prueba la clave con un mensaje mínimo: confirma que responde antes de confiar en ella. */
+export async function testAiConfig(cfg: AiConfig, timeoutMs = 20000): Promise<AiTest> {
+  const started = Date.now();
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), timeoutMs);
+  try {
+    const base = cfg.baseUrl.trim().replace(/\/+$/, "");
+    const model = cfg.model.trim() || DEFAULT_MODEL;
+    const res = await fetch(`${base}/chat/completions`, {
+      method: "POST",
+      headers: authHeaders(cfg, true),
+      signal: abort.signal,
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: "Responde sólo con la palabra: listo." },
+          { role: "user", content: "¿Estás disponible?" }
+        ],
+        max_tokens: 16,
+        temperature: 0
+      })
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      return { ok: false, ms: Date.now() - started, model, text: "", error: `${res.status} ${body.slice(0, 160)}` };
+    }
+    const data = await res.json();
+    const text = String(data?.choices?.[0]?.message?.content ?? "").trim();
+    return { ok: true, ms: Date.now() - started, model, text };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { ok: false, ms: Date.now() - started, model: cfg.model, text: "", error: msg };
+  } finally {
+    clearTimeout(timer);
+  }
+}

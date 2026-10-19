@@ -2830,3 +2830,208 @@ select.field {
   .academic-provider-row, .connection-grid { grid-template-columns: 1fr; }
   .academic-provider-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+
+/* ------------------------------ JARVIS · memoria y motor ------------------------------ */
+
+.jarvis-chat-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.jm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border, rgba(255, 255, 255, .16));
+  background: transparent;
+  color: var(--muted, rgba(255, 255, 255, .62));
+  font-size: 11px;
+  letter-spacing: .02em;
+  cursor: pointer;
+}
+
+.jm-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+
+.jm-badge.cloud .jm-badge-dot { background: #fbbf24; }
+.jm-badge.local .jm-badge-dot { background: #4ade80; }
+.jm-badge.free .jm-badge-dot { background: #38bdf8; }
+
+.jarvis-mem-btn {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border, rgba(255, 255, 255, .16));
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.jarvis-mem-btn:hover { border-color: var(--accent, #38bdf8); }
+
+.jm-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+.jm-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.jm-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  background: var(--card, rgba(255, 255, 255, .04));
+  border: 1px solid var(--border, rgba(255, 255, 255, .1));
+}
+
+.jm-stat b { font-size: 18px; font-weight: 600; }
+.jm-stat span { font-size: 10px; text-transform: uppercase; letter-spacing: .04em; opacity: .6; text-align: center; }
+
+.jm-lead { font-size: 13px; opacity: .75; margin: 0; line-height: 1.45; }
+
+.jm-tabs { display: flex; gap: 6px; }
+.jm-tabs button {
+  flex: 1;
+  padding: 7px 6px;
+  font-size: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(255, 255, 255, .12));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.jm-tabs button.active { border-color: var(--accent, #38bdf8); background: color-mix(in srgb, var(--accent, #38bdf8) 14%, transparent); }
+
+.jm-list { display: flex; flex-direction: column; gap: 14px; padding-bottom: 8px; }
+
+.jm-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  opacity: .6;
+  font-weight: 600;
+}
+.jm-group h3 span {
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border, rgba(255, 255, 255, .16));
+  opacity: .9;
+}
+
+.jm-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: var(--card, rgba(255, 255, 255, .04));
+  border: 1px solid var(--border, rgba(255, 255, 255, .08));
+}
+.jm-item b { display: block; font-size: 13px; font-weight: 500; line-height: 1.35; }
+.jm-item small { display: block; margin-top: 3px; font-size: 11px; opacity: .55; }
+
+.jm-del {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  opacity: .45;
+  cursor: pointer;
+}
+.jm-del:hover { opacity: 1; border-color: #f87171; color: #f87171; }
+
+.jm-empty { margin: 0; font-size: 12px; opacity: .5; }
+
+.jm-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.jm-actions button,
+.jm-engine button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(255, 255, 255, .16));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.jm-actions button:hover,
+.jm-engine button:hover { border-color: var(--accent, #38bdf8); }
+.jm-actions .danger { color: #f87171; }
+.jm-actions .danger:hover { border-color: #f87171; }
+.jm-engine button:disabled { opacity: .5; cursor: default; }
+.jm-engine button.link,
+button.link {
+  border: 0;
+  padding: 0;
+  font-size: 11px;
+  text-decoration: underline;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.jm-engine {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--card, rgba(255, 255, 255, .04));
+  border: 1px solid var(--border, rgba(255, 255, 255, .1));
+}
+.jm-engine p { margin: 0; font-size: 12px; line-height: 1.45; opacity: .72; }
+.jm-engine small { font-size: 11px; opacity: .6; }
+.jm-engine-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.jm-engine-head b { font-size: 13px; font-weight: 600; }
+.jm-engine-head span { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; opacity: .6; }
+.jm-engine.ok { border-color: color-mix(in srgb, #4ade80 45%, transparent); }
+.jm-engine.ok .jm-engine-head span { color: #4ade80; opacity: .95; }
+.jm-engine-head span.warn { color: #fbbf24; opacity: .95; }
+
+.jm-cap { display: flex; align-items: center; gap: 6px; font-size: 11px; opacity: .8; }
+.jm-cap button {
+  padding: 3px 10px;
+  font-size: 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border, rgba(255, 255, 255, .16));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.jm-cap button.active { border-color: var(--accent, #38bdf8); background: color-mix(in srgb, var(--accent, #38bdf8) 16%, transparent); }
+
+.jm-turn {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border-left: 2px solid var(--border, rgba(255, 255, 255, .18));
+  background: var(--card, rgba(255, 255, 255, .03));
+}
+.jm-turn.user { border-left-color: var(--accent, #38bdf8); }
+.jm-turn small { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; opacity: .5; }
+.jm-turn p { margin: 3px 0 0; font-size: 12.5px; line-height: 1.4; }

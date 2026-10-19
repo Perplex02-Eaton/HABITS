@@ -26,6 +26,7 @@ Endpoints (todos GET salvo /record):
     /lock                            bloquea la sesión de Windows
     /record  (POST JSON)             registra una llamada de UTP (para descubrir el endpoint de subida)
     /records?limit=20                últimas llamadas registradas (cabeceras sensibles redactadas)
+    /utp-refresh                     relee UTP+class: regenera la memoria de clases del sílabo capturado
 
 Seguridad: no ejecuta comandos arbitrarios, no acepta esquemas que no sean
 http/https y sólo abre rutas dentro de carpetas personales conocidas.
@@ -57,6 +58,31 @@ RECORD_PATH = STATE_DIR / "utp_recorded.jsonl"
 SHOT_DIR = HOME / "Pictures" / "JarvisCapturas"
 HERE = Path(__file__).resolve().parent
 SHOT_PS1 = HERE / "jarvis-screenshot.ps1"
+UTP_SCRIPT = HERE / "utp_courses.py"          # memoria de clases (sílabo -> semanas)
+COURSES_JSON = STATE_DIR / "utp_courses.json"  # memoria generada
+SYNC_SCRIPT = HERE / "utp_sync.py"             # tareas EN VIVO desde la API PAO (UTP+class)
+CAPTURE_SCRIPT = HERE / "utp_capture_server.py"  # receptor de la sesión (localhost:8899)
+INSTALL_PAGE = HERE / "install-bookmarklet.html"  # página para arrastrar el botón
+TASKS_JSON = HERE.parent / "public" / "utp-tasks.json"
+CLASS_URL = "https://class.utp.edu.pe"
+CAPTURE_PORT = 8899
+
+# --- motor de lenguaje LOCAL (Ollama): respuestas sin gastar créditos de API ---
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/")
+OLLAMA_MODEL = os.environ.get("JARVIS_MODEL", "qwen3:8b")
+OLLAMA_KEEP_ALIVE = os.environ.get("JARVIS_KEEP_ALIVE", "15m")  # mantiene el modelo en VRAM
+ASK_TIMEOUT = int(os.environ.get("JARVIS_ASK_TIMEOUT", "240"))
+
+JARVIS_SYSTEM = (
+    "Eres JARVIS, el mayordomo tecnologico personal del jefe. Sereno, leal, elegante y "
+    "preciso. Responde SIEMPRE en espanol latinoamericano natural (Peru), tratandolo de "
+    "'jefe' como maximo una vez por respuesta. Se breve: una a tres frases, porque tu "
+    "respuesta se lee en voz alta. Si te piden el resumen de la semana o de un curso, hasta "
+    "seis frases. Usa la MEMORIA que te doy como unica fuente para sus cursos, temas, "
+    "semanas y entregas; si algo no esta ahi, di que no lo tienes cargado y no lo inventes. "
+    "Nunca afirmes que ejecutaste una accion si la aplicacion no lo confirmo. "
+    "Prohibido usar markdown, listas con guiones, negritas o emojis: texto plano para voz."
+)
 
 # Orígenes que pueden hablarle al agente desde el navegador.
 ALLOWED_ORIGINS = (
@@ -478,6 +504,9 @@ class AgentHandler(BaseHTTPRequestHandler):
             "/clipboard": self.route_clipboard,
             "/lock": self.route_lock,
             "/records": self.route_records,
+            "/utp-refresh": self.route_utp_refresh,
+            "/utp-connect": self.route_utp_connect,
+            "/llm-status": self.route_llm_status,
         }.get(route)
         if not handler:
             self._json(404, {"ok": False, "error": f"ruta desconocida: {route}"})
@@ -497,6 +526,18 @@ class AgentHandler(BaseHTTPRequestHandler):
         raw = self.rfile.read(length) if length else b""
         if self._blocked():
             return
+        if route == "/ask":
+            try:
+                payload = json.loads(raw.decode("utf-8") or "{}")
+            except Exception:
+                self._json(400, {"ok": False, "error": "json inválido"})
+                return
+            try:
+                self.route_ask(payload)
+            except Exception as exc:
+                log(f"ERROR /ask: {exc!r}")
+                self._json(500, {"ok": False, "error": str(exc)})
+            return
         if route == "/record":
             try:
                 entry = json.loads(raw.decode("utf-8") or "{}")
@@ -509,6 +550,86 @@ class AgentHandler(BaseHTTPRequestHandler):
             return
         self._json(404, {"ok": False, "error": f"ruta desconocida: {route}"})
 
+    # -- motor local (Ollama) ----------------------------------------------- #
+
+    def route_llm_status(self, q, dry) -> None:
+        """¿Está listo el motor local? No gasta nada: sólo pregunta a Ollama."""
+        import urllib.request
+
+        info = {"ok": False, "ollama": OLLAMA_URL, "model": OLLAMA_MODEL, "models": [], "ready": False}
+        try:
+            with urllib.request.urlopen(f"{OLLAMA_URL}/api/tags", timeout=4) as res:
+                data = json.loads(res.read().decode("utf-8") or "{}")
+            names = [str(m.get("name", "")) for m in data.get("models", [])]
+            info["models"] = names
+            info["ready"] = any(n == OLLAMA_MODEL or n.startswith(OLLAMA_MODEL.split(":")[0]) for n in names)
+            info["ok"] = bool(names)
+        except Exception as exc:
+            info["error"] = f"Ollama no responde en {OLLAMA_URL} ({exc.__class__.__name__})"
+        self._json(200, info)
+
+    def route_ask(self, body: dict) -> None:
+        """POST /ask {text, context?, history?} -> respuesta del modelo LOCAL (gratis)."""
+        import urllib.request
+
+        text = str(body.get("text") or "").strip()
+        if not text:
+            self._json(400, {"ok": False, "error": "falta text"})
+            return
+        context = str(body.get("context") or "").strip()
+        model = str(body.get("model") or OLLAMA_MODEL).strip()
+        system = str(body.get("system") or JARVIS_SYSTEM)
+        if context:
+            system += f"\n\nMEMORIA del jefe (sílabo y notas de clase UTP+class; única fuente):\n{context}"
+        messages = [{"role": "system", "content": system}]
+        for turn in body.get("history") or []:
+            if not isinstance(turn, dict):
+                continue
+            role = "assistant" if str(turn.get("role")) == "assistant" else "user"
+            content = str(turn.get("text") or "").strip()
+            if content:
+                messages.append({"role": role, "content": content[:800]})
+        messages.append({"role": "user", "content": text[:4000]})
+
+        payload = {
+            "model": model,
+            "messages": messages,
+            "stream": False,
+            "keep_alive": OLLAMA_KEEP_ALIVE,
+            "options": {"temperature": 0.4, "num_ctx": int(body.get("num_ctx") or 8192)},
+        }
+        started = time.time()
+        try:
+            req = urllib.request.Request(
+                f"{OLLAMA_URL}/api/chat",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=ASK_TIMEOUT) as res:
+                data = json.loads(res.read().decode("utf-8") or "{}")
+        except Exception as exc:
+            log(f"ask: motor local falló ({exc!r})")
+            self._json(503, {
+                "ok": False,
+                "error": f"motor local no disponible: {exc.__class__.__name__}",
+                "hint": "Levanta Ollama (ollama serve) o cambia de modelo en Ajustes.",
+                "model": model,
+            })
+            return
+        answer = str((data.get("message") or {}).get("content") or "").strip()
+        if not answer:
+            self._json(502, {"ok": False, "error": "respuesta vacía del motor local", "model": model})
+            return
+        log(f"ask: {len(answer)} chars en {time.time() - started:.1f}s ({model})")
+        self._json(200, {
+            "ok": True,
+            "text": answer,
+            "model": data.get("model", model),
+            "provider": "ollama",
+            "seconds": round(time.time() - started, 1),
+        })
+
     # -- rutas -------------------------------------------------------------- #
     def route_health(self, q, dry) -> None:
         self._json(200, {
@@ -519,9 +640,9 @@ class AgentHandler(BaseHTTPRequestHandler):
             "pid": os.getpid(),
             "time": datetime.now().isoformat(timespec="seconds"),
             "capabilities": [
-                "open_url", "open_app", "open_folder", "media_keys",
+                "ask_local", "llm_status", "open_url", "open_app", "open_folder", "media_keys",
                 "screenshot", "focus_window", "type_text", "clipboard",
-                "lock", "utp_record",
+                "lock", "utp_record", "utp_refresh", "utp_connect",
             ],
             "apps": sorted(set(WEB_TARGETS) | set(NATIVE_TARGETS)),
             "folders": sorted(FOLDER_TARGETS),
@@ -634,10 +755,167 @@ class AgentHandler(BaseHTTPRequestHandler):
         records = read_records(limit)
         self._json(200, {"ok": True, "count": len(records), "records": records})
 
+    def route_utp_refresh(self, q, dry) -> None:
+        """Relee UTP+class y regenera la memoria de clases que usa la app."""
+        if dry:
+            self._json(200, {"ok": True, "dry": True, "script": str(UTP_SCRIPT)})
+            return
+        res = regenerate_course_memory(live=q.get("live") != "0")
+        log(f"utp-refresh ok={res['ok']} live={res['live']} code={res['code']}")
+        payload = {
+            "ok": res["ok"],
+            "code": res["code"],
+            "live": res["live"],
+            "needs_connect": res["needs_connect"],
+            "steps": res["steps"],
+            "output": res["output"][-900:],
+            "connect_port": CAPTURE_PORT,
+        }
+        if res["ok"]:
+            try:
+                with open(COURSES_JSON, encoding="utf-8") as f:
+                    data = json.load(f)
+                payload["current_week"] = data.get("current_week")
+                payload["generated_at"] = data.get("generated_at")
+                payload["courses"] = len(data.get("courses") or {})
+            except Exception as exc:
+                payload["warn"] = f"no pude leer la memoria: {exc!r}"
+        if TASKS_JSON.exists():
+            try:
+                with open(TASKS_JSON, encoding="utf-8") as f:
+                    tj = json.load(f)
+                payload["utp_tasks"] = len(tj.get("tasks") or [])
+            except Exception:
+                pass
+        self._json(200 if res["ok"] else 500, payload)
+
+    def route_utp_connect(self, q, dry) -> None:
+        """Un clic: levanta el receptor local y abre UTP+class + la página del botón.
+
+        El bookmarklet (una sola vez en la barra de favoritos) manda la sesión
+        al receptor y con eso Jarvis puede leer tareas EN VIVO de UTP+class.
+        """
+        port = int(q.get("port") or CAPTURE_PORT)
+        if dry:
+            self._json(200, {"ok": True, "dry": True, "port": port, "url": CLASS_URL})
+            return
+        steps: list[str] = []
+        started = False
+        if not port_open(port):
+            started = start_capture_server(port)
+            steps.append("receptor local arriba" if started else "no pude levantar el receptor")
+        else:
+            steps.append("receptor local ya estaba arriba")
+        opened: list[str] = []
+        if str(q.get("install", "1")) != "0" and INSTALL_PAGE.exists():
+            ok, _ = startfile(INSTALL_PAGE.as_uri())
+            if ok:
+                opened.append("install")
+        ok, _ = startfile(CLASS_URL)
+        if ok:
+            opened.append("class")
+        log(f"utp-connect port={port} started={started} opened={opened}")
+        self._json(200, {
+            "ok": True,
+            "port": port,
+            "receiver": f"http://127.0.0.1:{port}/status",
+            "url": CLASS_URL,
+            "opened": opened,
+            "started": started,
+            "steps": steps + [
+                "Haz clic en el botón 'Sincronizar con HABITS' dentro de UTP+class",
+                "Vuelve aquí y pulsa Leer UTP+class",
+            ],
+        })
+
 
 # --------------------------------------------------------------------------- #
 # main
 # --------------------------------------------------------------------------- #
+def _run_script(script: Path, args: list[str] | None = None, timeout: int = 120) -> tuple[bool, str, int]:
+    """Corre un script python del repo sin abrir ventana. Devuelve (ok, salida, código)."""
+    if not script.exists():
+        return False, f"no encuentro {script}", -1
+    python = sys.executable or "python"
+    try:
+        proc = subprocess.run(
+            [python, str(script)] + list(args or []),
+            cwd=str(HERE.parent), capture_output=True, text=True, timeout=timeout,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+    except subprocess.TimeoutExpired:
+        return False, f"timeout en {script.name}", -1
+    except Exception as exc:
+        return False, f"no pude ejecutar {script.name}: {exc!r}", -1
+    out = ((proc.stdout or "") + (proc.stderr or "")).strip()
+    return proc.returncode == 0, out, proc.returncode
+
+
+def regenerate_course_memory(live: bool = True) -> dict:
+    """Relee UTP+class y reconstruye la memoria de clases.
+
+    Paso 1 (live): scripts/utp_sync.py consulta la API PAO con la sesión guardada
+                   y actualiza public/utp-tasks.json (tareas reales).
+    Paso 2:         scripts/utp_courses.py convierte el sílabo en la memoria
+                   semana/sesión/tema que lee la app.
+    Si la sesión venció, el paso 1 avisa y sólo se regenera el sílabo.
+    """
+    steps: list[str] = []
+    live_ok = False
+    needs_connect = False
+    if live and SYNC_SCRIPT.exists():
+        ok, out, _ = _run_script(SYNC_SCRIPT, timeout=90)
+        live_ok = ok and "utp-tasks" in out.lower() and "Sin token" not in out
+        if not live_ok:
+            needs_connect = "Sin token" in out or "401" in out or "token" in out.lower()
+        tail = out.strip().splitlines()[-1] if out.strip() else ""
+        steps.append(f"tareas en vivo: {'sí' if live_ok else 'no'} — {tail[:160]}")
+    else:
+        steps.append("tareas en vivo: omitido")
+
+    ok, out, code = _run_script(UTP_SCRIPT, timeout=180)
+    steps.append(f"memoria de clases: {'ok' if ok else 'falló'} ({code})")
+    return {
+        "ok": ok,
+        "code": code,
+        "output": out,
+        "live": live_ok,
+        "needs_connect": bool(needs_connect and not live_ok),
+        "steps": steps,
+    }
+
+
+def port_open(port: int) -> bool:
+    """¿Hay algo escuchando ya en ese puerto local?"""
+    import socket
+    try:
+        with socket.create_connection(("127.0.0.1", int(port)), 0.4):
+            return True
+    except OSError:
+        return False
+
+
+def start_capture_server(port: int) -> bool:
+    """Levanta el receptor de la sesión UTP (localhost:PORT) y espera a que escuche."""
+    if not CAPTURE_SCRIPT.exists():
+        return False
+    python = sys.executable or "python"
+    try:
+        subprocess.Popen(
+            [python, str(CAPTURE_SCRIPT), "--port", str(int(port))],
+            cwd=str(HERE.parent), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0) | getattr(subprocess, "DETACHED_PROCESS", 0),
+        )
+    except Exception as exc:
+        log(f"capture server no arrancó: {exc!r}")
+        return False
+    for _ in range(15):
+        time.sleep(0.2)
+        if port_open(port):
+            return True
+    return False
+
+
 def selftest() -> int:
     """Comprueba las rutas locales sin abrir nada en pantalla."""
     print("== selftest jarvis_agent ==")

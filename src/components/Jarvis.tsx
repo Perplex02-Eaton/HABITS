@@ -4,7 +4,22 @@ import { useStore } from "../stores/useStore";
 import { toast } from "../stores/useToasts";
 import { uid } from "../lib/uid";
 import type { MealType, Priority } from "../lib/types";
-import { aiAssistant, aiConfigured } from "../lib/ai";
+import {
+  NoEngineError,
+  askJarvis,
+  prewarmLocalEngine,
+  type JarvisMode
+} from "../lib/aiProviders";
+import {
+  intentKeyOf,
+  learnFrom,
+  memoryDigest,
+  recordIntent,
+  rememberTurn,
+  spokenMemorySummary,
+  useJarvisMemory
+} from "../lib/jarvisMemory";
+import JarvisMemoryPanel, { JarvisEngineBadge } from "./JarvisMemory";
 import {
   courseWeekText,
   deliverablesText,
@@ -15,6 +30,7 @@ import {
   useCourseMemory,
   weekOverview
 } from "../lib/courseMemory";
+import { appCourseFor, buildClassBrief } from "../lib/classBrief";
 import { cancelSpanishAudio, speakSpanishAudio, unlockSpanishAudio, warmUpSpanishVoice } from "../lib/voice";
 import {
   AGENT_ACTIONS,
@@ -755,6 +771,12 @@ export default function Jarvis() {
   const navigate = useNavigate();
   // Memoria de clases (public/utp-courses.json): unidades, semanas, temas y entregas.
   const courseMemory = useCourseMemory();
+  // Memoria propia de JARVIS (localStorage): datos, instrucciones e historial.
+  const jarvisMemory = useJarvisMemory();
+  const [engineMode, setEngineMode] = useState<JarvisMode | "listo">("listo");
+  const [engineProvider, setEngineProvider] = useState("");
+  const [memoryOpen, setMemoryOpen] = useState(false);
+  const aiCfg = useStore((state) => state.data.settings.ai);
 
   const addMessage = (role: ChatMessage["role"], text: string) => {
     setMessages((current) => [...current.slice(-11), { id: Date.now() + Math.random(), role, text }]);
@@ -778,6 +800,11 @@ export default function Jarvis() {
     const log = chatLogRef.current;
     if (log) log.scrollTop = log.scrollHeight;
   }, [messages, partial, thinking]);
+
+  // Deja el motor local cargado: la primera pregunta no espera el arranque.
+  useEffect(() => {
+    void prewarmLocalEngine();
+  }, []);
 
   const speak = async (text: string) => {
     if (typeof window === "undefined") return;
@@ -971,6 +998,19 @@ export default function Jarvis() {
     if (courseMemory) {
       const course = findCourse(courseMemory, low);
       const imperative = /(agrega|a[nñ]ade|crea|recu[eé]rdame|reg[ií]stra|\bpon\b|guarda|borra|complet)/.test(low);
+      // Brief de la clase (Cursos): tema + de qué trata + clase pasada + tarea
+      // pendiente + cómo empezar, con la memoria de UTP+class.
+      const briefish = /(qu[eé] tema|qu[eé] toca|qu[eé] vemos|qu[eé] veremos|de qu[eé] trata|clase pasada|qu[eé] se (?:vio|trat[oó])|c[oó]mo empiezo|c[oó]mo empezar|por d[oó]nde empiezo|qu[eé] hago en|brief|res[uú]meme la clase|qu[eé] me toca)/.test(low);
+      if (briefish && !imperative) {
+        const appCourse = course ? appCourseFor(course, s.data.courses) : null;
+        const brief = buildClassBrief({
+          memory: courseMemory,
+          course: appCourse,
+          spokenName: low,
+          tasks: s.data.tasks
+        });
+        if (brief) return brief.speech;
+      }
       const weekish = /semana|semanal/.test(low);
       const academic = /(curso|clase|materia|tema|utp|universi|examen|entrega|tarea|repaso|toca|veo|vemos|veremos|trata)/.test(low);
       const notNavigation = !/^\s*(abre|abrir|ve a|ll[eé]vame|mu[eé]strame la pantalla)/.test(low);
@@ -1180,6 +1220,23 @@ export default function Jarvis() {
     const cleanText = text.trim();
     if (!cleanText) return;
     addMessage("user", cleanText);
+    // Memoria: cada intercambio queda guardado y las rutinas se cuentan.
+    rememberTurn("user", cleanText);
+    const intent = intentKeyOf(cleanText);
+    recordIntent(intent.key, intent.label);
+
+    // ¿Qué recuerdas? → JARVIS responde desde su propia memoria, sin gastar nada.
+    if (/(qu[eé] recuerdas|tu memoria|qu[eé] sabes de m[ií]|qu[eé] te he dicho|tus instrucciones|lo que aprendiste)/i.test(cleanText)) {
+      const said = spokenMemorySummary();
+      setEngineMode("memoria");
+      setEngineProvider("memoria local");
+      setReply(said);
+      addMessage("assistant", said);
+      rememberTurn("assistant", said);
+      void speak(said);
+      return;
+    }
+
     let r = dispatch(text);
     let handledLocally = Boolean(r);
     // El intent marcó una acción de PC: la ejecuta el agente local (127.0.0.1:8877).
@@ -1189,17 +1246,24 @@ export default function Jarvis() {
       r = await runAgentTask(r);
       handledLocally = true;
     }
-    if (!r && aiConfigured(useStore.getState().data.settings.ai)) {
+    if (!r) {
+      // Cadena sin costo: memoria → caché → motor local (Ollama) → nube (último recurso).
       setThinking(true);
-      setReply("Procesando tu consulta…");
+      setReply("Déjame ver…");
+      const context = [courseMemory ? memoryContextBlock(courseMemory) : "", memoryDigest()]
+        .filter(Boolean)
+        .join("\n\n");
       try {
-        r = await aiAssistant(
-          text,
-          useStore.getState().data.settings.ai,
-          courseMemory ? memoryContextBlock(courseMemory) : undefined
-        );
-      } catch {
-        r = "No pude conectar con la inteligencia artificial. Revisa la configuración de DeepSeek en Ajustes.";
+        const answer = await askJarvis(text, { cfg: aiCfg, context });
+        r = answer.text;
+        setEngineMode(answer.mode);
+        setEngineProvider(answer.provider);
+      } catch (error) {
+        r =
+          error instanceof NoEngineError
+            ? error.hint
+            : "No pude responder eso ahora mismo. Lo que ya tengo en memoria sigue disponible: pregúntame por tus clases o tareas.";
+        setEngineMode("listo");
       } finally {
         setThinking(false);
       }
@@ -1208,9 +1272,15 @@ export default function Jarvis() {
     if (handledLocally && /^(Abriendo|Abrí|Traje|Captura|Copiado|Bloqueo|Escribí|Registrado|Preparé|Tarea registrada|Curso |Idea registrada|Semana |Entregas)/i.test(r)) {
       r = `Entendido, jefe. ${r}`;
     }
+    // Aprendizaje: instrucciones permanentes y datos que el jefe acaba de dar.
+    const learned = learnFrom(cleanText, r);
+    if (learned.learned.length) {
+      r = `${r} Queda en mi memoria: ${learned.learned.join("; ")}.`;
+    }
     setReply(r);
     addMessage("assistant", r);
-    speak(r);
+    rememberTurn("assistant", r);
+    void speak(r);
   };
 
   const submitText = (event: FormEvent<HTMLFormElement>) => {
@@ -1338,7 +1408,20 @@ export default function Jarvis() {
       <div className="jarvis-conversation" aria-label="Conversación con Jarvis">
         <div className="jarvis-chat-head">
           <span className="jarvis-chat-label">CONVERSACIÓN</span>
-          <span className="jarvis-chat-hint">Puedes escribir o hablar</span>
+          <span className="jarvis-chat-hint">
+            <JarvisEngineBadge mode={engineMode} provider={engineProvider} onOpen={() => setMemoryOpen(true)} />
+            <button
+              type="button"
+              className="jarvis-mem-btn"
+              onClick={() => setMemoryOpen(true)}
+              title="Lo que JARVIS recuerda de ti"
+            >
+              Memoria
+              {jarvisMemory.facts.length + jarvisMemory.rules.length > 0
+                ? ` ${jarvisMemory.facts.length + jarvisMemory.rules.length}`
+                : ""}
+            </button>
+          </span>
         </div>
         <div ref={chatLogRef} className="jarvis-chat-log" aria-live="polite">
           {!messages.length && !partial && (
@@ -1397,13 +1480,15 @@ export default function Jarvis() {
         {[
           "¿Qué clase tengo hoy?",
           "¿Qué tarea vence primero?",
-          "Ayúdame a estudiar"
+          "¿Qué recuerdas de mí?"
         ].map((hint) => (
           <button key={hint} type="button" onClick={() => void handleCommand(hint)} disabled={thinking}>
             {hint}
           </button>
         ))}
       </div>
+
+      <JarvisMemoryPanel open={memoryOpen} onClose={() => setMemoryOpen(false)} cfg={aiCfg} />
     </section>
   );
 }

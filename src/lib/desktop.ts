@@ -52,8 +52,13 @@ async function agentFetch(
   try {
     const response = await fetch(url, { signal: controller.signal, cache: "no-store" });
     if (!response.ok && response.status !== 404) {
-      // 404 = "no conozco ese nombre": lo devolvemos para poder explicarlo.
-      return { ok: false, error: `agente respondió ${response.status}` };
+      // 4xx/5xx también traen información útil (steps, needs_connect): la conservamos.
+      try {
+        const body = (await response.json()) as AgentResult;
+        return { ...body, ok: false };
+      } catch {
+        return { ok: false, error: `agente respondió ${response.status}` };
+      }
     }
     return (await response.json()) as AgentResult;
   } catch {
@@ -73,6 +78,83 @@ export async function agentStatus(force = false): Promise<AgentInfo | null> {
   return info;
 }
 
+/** POST al agente local (para el motor de lenguaje que corre en la propia PC). */
+async function agentPost(
+  path: string,
+  body: Record<string, unknown>,
+  timeoutMs = 6000
+): Promise<AgentResult | null> {
+  if (typeof window === "undefined") return null;
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(`${AGENT_ORIGIN}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+      cache: "no-store"
+    });
+    try {
+      const data = (await response.json()) as AgentResult;
+      return response.ok ? data : { ...data, ok: false };
+    } catch {
+      return { ok: false, error: `agente respondió ${response.status}` };
+    }
+  } catch {
+    return null;
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
+export type AgentLlmStatus = {
+  ok: boolean;
+  ollama: string;
+  model: string;
+  models: string[];
+  ready: boolean;
+  error?: string;
+};
+
+/** ¿Está listo el motor de lenguaje local (Ollama)? No gasta créditos. */
+export async function agentLlmStatus(timeoutMs = 3500): Promise<AgentLlmStatus | null> {
+  const result = await agentFetch("/llm-status", {}, timeoutMs);
+  if (!result || !("ready" in result)) return null;
+  return result as unknown as AgentLlmStatus;
+}
+
+export type AgentAskResult = {
+  ok: boolean;
+  text?: string;
+  model?: string;
+  provider?: string;
+  seconds?: number;
+  error?: string;
+  hint?: string;
+};
+
+/**
+ * Pregunta al motor de lenguaje LOCAL (Ollama en esta misma PC). Costo cero y
+ * funciona aunque no haya internet ni API key.
+ */
+export function agentAsk(
+  text: string,
+  opts: { context?: string; history?: Array<{ role: string; text: string }>; model?: string; numCtx?: number } = {}
+): Promise<AgentAskResult | null> {
+  return agentPost(
+    "/ask",
+    {
+      text,
+      context: opts.context ?? "",
+      history: opts.history ?? [],
+      model: opts.model ?? "",
+      num_ctx: opts.numCtx ?? 8192
+    },
+    300000
+  ) as Promise<AgentAskResult | null>;
+}
+
 export const agentOpenUrl = (url: string) => agentFetch("/open", { url });
 export const agentOpenApp = (name: string) => agentFetch("/app", { name });
 export const agentMedia = (action: MediaAction) => agentFetch("/media", { action }, 4000);
@@ -81,6 +163,46 @@ export const agentFocus = (title: string) => agentFetch("/focus", { title }, 800
 export const agentType = (text: string) => agentFetch("/type", { text }, 12000);
 export const agentClipboard = (text: string) => agentFetch("/clipboard", { text }, 8000);
 export const agentLock = (delay = 6) => agentFetch("/lock", { delay }, 20000);
+
+/**
+ * Resultado de releer UTP+class. `live` = se pudieron leer las TAREAS reales de
+ * la API del aula; `needs_connect` = la sesión venció y hay que re-capturarla
+ * con el clic del bookmarklet.
+ */
+export type UtpRefreshResult = AgentResult & {
+  live?: boolean;
+  needs_connect?: boolean;
+  steps?: string[];
+  current_week?: number;
+  generated_at?: string;
+  courses?: number;
+  utp_tasks?: number;
+  connect_port?: number;
+};
+
+export type UtpConnectResult = AgentResult & {
+  port?: number;
+  receiver?: string;
+  url?: string;
+  opened?: string[];
+  started?: boolean;
+  steps?: string[];
+};
+
+/**
+ * Relee UTP+class: el agente lee las tareas EN VIVO con la sesión guardada y
+ * regenera la memoria de clases (~/.hermes/utp_courses.json +
+ * public/utp-courses.json). Timeout amplio: sincroniza y luego reconstruye.
+ */
+export const agentUtpRefresh = (live = true) =>
+  agentFetch("/utp-refresh", live ? {} : { live: 0 }, 150000) as Promise<UtpRefreshResult | null>;
+
+/**
+ * Un clic para reconectar UTP+class: levanta el receptor local (127.0.0.1:8899)
+ * y abre UTP+class + la página del botón "Sincronizar con HABITS".
+ */
+export const agentUtpConnect = (withInstallPage = true) =>
+  agentFetch("/utp-connect", withInstallPage ? {} : { install: 0 }, 30000) as Promise<UtpConnectResult | null>;
 
 /** Acciones que Jarvis sabe pedirle al agente (para la pantalla de ayuda/estado). */
 export const AGENT_ACTIONS: Array<{ say: string; what: string }> = [

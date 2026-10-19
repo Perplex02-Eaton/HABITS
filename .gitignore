@@ -16,3 +16,4 @@ scripts/utp_sync.py
 # Python
 __pycache__/
 *.pyc
+*.tsbuildinfo
