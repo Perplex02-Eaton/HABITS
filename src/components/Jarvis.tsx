@@ -1243,7 +1243,13 @@ export default function Jarvis() {
     if (r.startsWith(AGENT_SENTINEL)) {
       setThinking(true);
       setReply("Ejecutando en tu PC…");
-      r = await runAgentTask(r);
+      try {
+        r = await runAgentTask(r);
+      } finally {
+        // Sin esto el chat se queda en «Pensando···» para siempre y ya no acepta
+        // otra orden: la tarea se ejecutaba, pero la app parecía colgada.
+        setThinking(false);
+      }
       handledLocally = true;
     }
     if (!r) {
@@ -1280,6 +1286,8 @@ export default function Jarvis() {
     setReply(r);
     addMessage("assistant", r);
     rememberTurn("assistant", r);
+    // La ventana flotante también muestra la respuesta: mismo camino, otra superficie.
+    window.dispatchEvent(new CustomEvent("habits:jarvis-reply", { detail: { text: r } }));
     void speak(r);
   };
 
@@ -1290,6 +1298,21 @@ export default function Jarvis() {
     setTextInput("");
     void handleCommand(value);
   };
+
+  // La ventana flotante (globo) manda la frase hablada por aquí: mismo camino
+  // que el chat, sin duplicar la lógica ni el gasto de motores.
+  const askRef = useRef(handleCommand);
+  useEffect(() => {
+    askRef.current = handleCommand;
+  });
+  useEffect(() => {
+    const onAsk = (event: Event) => {
+      const text = String((event as CustomEvent<{ text?: string }>).detail?.text ?? "").trim();
+      if (text) void askRef.current(text);
+    };
+    window.addEventListener("habits:jarvis-ask", onAsk as EventListener);
+    return () => window.removeEventListener("habits:jarvis-ask", onAsk as EventListener);
+  }, []);
 
   const toggle = () => {
     if (listening) {

@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect } from "react";
 import TabBar from "./components/TabBar";
 import Toasts from "./components/Toasts";
 import ReminderWatcher from "./components/ReminderWatcher";
+import FloatingBubble from "./components/FloatingBubble";
 import { useStore } from "./stores/useStore";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -19,6 +20,7 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const Study = lazy(() => import("./pages/Study"));
 const CourseNotebook = lazy(() => import("./pages/CourseNotebook"));
 const Connections = lazy(() => import("./pages/Connections"));
+const Companion = lazy(() => import("./pages/Companion"));
 
 export default function App() {
   const location = useLocation();
@@ -67,11 +69,13 @@ export default function App() {
           <Route path="/agenda" element={<Calendar />} />
           <Route path="/planes" element={<Pricing />} />
           <Route path="/conexiones" element={<Connections />} />
+          <Route path="/acompanante" element={<Companion />} />
           <Route path="/estudio" element={<Study />} />
           <Route path="/cuaderno/:courseId" element={<CourseNotebook />} />
           <Route path="*" element={<Dashboard />} />
         </Routes>
       </Suspense>
+      <FloatingBubble />
       <TabBar />
     </>
   );

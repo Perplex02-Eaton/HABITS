@@ -150,6 +150,20 @@ export default function Dashboard() {
       <div className="stack">
         <MusicPanel compact />
         <Jarvis />
+        <Link to="/acompanante" className="card card-section reveal" style={{ textDecoration: "none" }}>
+          <div className="row-between">
+            <div className="row">
+              <span style={{ fontSize: 22 }}>🤝</span>
+              <div>
+                <div className="list-title">Acompañante</div>
+                <div className="list-sub">
+                  Pide ayuda en tu equipo o ayuda a otro, con permiso y en segundo plano
+                </div>
+              </div>
+            </div>
+            <span className="badge badge-purple">Nuevo</span>
+          </div>
+        </Link>
         <DailyCommandCenter />
         <AcademicConnections />
 

@@ -17,3 +17,6 @@ scripts/utp_sync.py
 __pycache__/
 *.pyc
 *.tsbuildinfo
+
+# Notas, planes y capturas locales de Hermes
+.hermes/
